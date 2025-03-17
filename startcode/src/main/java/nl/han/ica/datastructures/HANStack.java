@@ -9,11 +9,11 @@ import lombok.Setter;
 public class HANStack<T> implements IHANStack<T> {
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private HANLinkedListElement<T> top;
+    private HANStackElement<T> top;
 
     @Override
     public void push(T value) {
-        HANLinkedListElement<T> element = new HANLinkedListElement<>(value);
+        HANStackElement<T> element = new HANStackElement<>(value);
         element.setNext(top);
         top = element;
     }
@@ -23,7 +23,7 @@ public class HANStack<T> implements IHANStack<T> {
         if (top == null) {
             return null;
         }
-        HANLinkedListElement<T> element = top;
+        HANStackElement<T> element = top;
         top = element.getNext();
         return element.getValue();
     }
