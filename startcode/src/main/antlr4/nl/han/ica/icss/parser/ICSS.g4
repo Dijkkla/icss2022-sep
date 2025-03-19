@@ -48,14 +48,19 @@ ASSIGNMENT_OPERATOR: ':=';
 stylesheet: (style_definition | variable_assignment)* EOF;
 
 style_definition: selector OPEN_BRACE (declaration | variable_assignment)* CLOSE_BRACE;
-
 selector: ID_IDENT | CLASS_IDENT | LOWER_IDENT;
-
-declaration: property COLON (value | variable) SEMICOLON;
-
+declaration: property COLON operation SEMICOLON;
 property: LOWER_IDENT;
 value: COLOR | PIXELSIZE | PERCENTAGE;
 
-variable_assignment: variable ASSIGNMENT_OPERATOR (boolean | value) SEMICOLON;
+variable_assignment: variable ASSIGNMENT_OPERATOR (boolean | operation) SEMICOLON;
 variable: CAPITAL_IDENT;
 boolean: TRUE | FALSE;
+
+operation
+    : '(' operation ')'
+    | operation '^' operation
+    | operation ( '*' | '/' ) operation
+    | operation ( '+' | '-' ) operation
+    | (value | variable | SCALAR)
+    ;
