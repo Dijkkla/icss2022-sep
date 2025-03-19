@@ -45,13 +45,17 @@ ASSIGNMENT_OPERATOR: ':=';
 
 
 //--- PARSER: ---
-stylesheet: group* EOF;
+stylesheet: (style_definition | variable_assignment)* EOF;
 
-group: selector OPEN_BRACE declaration* CLOSE_BRACE;
+style_definition: selector OPEN_BRACE (declaration | variable_assignment)* CLOSE_BRACE;
 
 selector: ID_IDENT | CLASS_IDENT | LOWER_IDENT;
 
-declaration: property COLON value SEMICOLON;
+declaration: property COLON (value | variable) SEMICOLON;
 
 property: LOWER_IDENT;
 value: COLOR | PIXELSIZE | PERCENTAGE;
+
+variable_assignment: variable ASSIGNMENT_OPERATOR (boolean | value) SEMICOLON;
+variable: CAPITAL_IDENT;
+boolean: TRUE | FALSE;
