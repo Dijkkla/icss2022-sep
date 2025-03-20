@@ -47,15 +47,16 @@ ASSIGNMENT_OPERATOR: ':=';
 //--- PARSER: ---
 stylesheet: (style_definition | variable_assignment)* EOF;
 
-style_definition: selector OPEN_BRACE (declaration | variable_assignment)* CLOSE_BRACE;
+style_definition: selector OPEN_BRACE style_rule* CLOSE_BRACE;
+style_rule: declaration | variable_assignment | if_statement;
 selector: ID_IDENT | CLASS_IDENT | LOWER_IDENT;
 declaration: property COLON operation SEMICOLON;
 property: LOWER_IDENT;
 value: COLOR | PIXELSIZE | PERCENTAGE;
 
-variable_assignment: variable ASSIGNMENT_OPERATOR (boolean | operation) SEMICOLON;
+variable_assignment: variable ASSIGNMENT_OPERATOR (bool | operation) SEMICOLON;
 variable: CAPITAL_IDENT;
-boolean: TRUE | FALSE;
+bool: TRUE | FALSE;
 
 operation
     : '(' operation ')'
@@ -64,3 +65,8 @@ operation
     | operation ( '+' | '-' ) operation
     | (value | variable | SCALAR)
     ;
+
+if_statement: IF BOX_BRACKET_OPEN (variable | bool) BOX_BRACKET_CLOSE
+                if_statement_body
+                (ELSE (if_statement | if_statement_body))?;
+if_statement_body: OPEN_BRACE style_rule* CLOSE_BRACE;
