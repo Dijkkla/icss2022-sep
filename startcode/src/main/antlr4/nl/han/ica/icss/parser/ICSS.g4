@@ -59,10 +59,8 @@ variable: CAPITAL_IDENT;
 bool: TRUE | FALSE;
 
 operation
-    : '(' operation ')'
-    | operation '^' operation
-    | operation ( '*' | '/' ) operation
-    | operation ( '+' | '-' ) operation
+    : operation MUL operation
+    | operation ( PLUS | MIN ) operation
     | (value | variable | SCALAR)
     ;
 
