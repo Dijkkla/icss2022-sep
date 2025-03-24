@@ -47,7 +47,7 @@ ASSIGNMENT_OPERATOR: ':=';
 //--- PARSER: ---
 stylesheet: (style_definition | variable_assignment)* EOF;
 
-style_definition: selector OPEN_BRACE style_rule* CLOSE_BRACE;
+style_definition: selector block;
 style_rule: declaration | variable_assignment | if_statement;
 selector: ID_IDENT | CLASS_IDENT | LOWER_IDENT;
 declaration: property COLON operation SEMICOLON;
@@ -65,6 +65,6 @@ operation
     ;
 
 if_statement: IF BOX_BRACKET_OPEN (variable | bool) BOX_BRACKET_CLOSE
-                if_statement_body
-                (ELSE (if_statement | if_statement_body))?;
-if_statement_body: OPEN_BRACE style_rule* CLOSE_BRACE;
+                block
+                (ELSE (if_statement | block))?;
+block: OPEN_BRACE style_rule* CLOSE_BRACE;
