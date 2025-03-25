@@ -44,8 +44,12 @@ public class Checker {
     }
 
     private void checkStylerule(Stylerule stylerule) {
+        checkBlock(stylerule.body);
+    }
+
+    private void checkBlock(List<ASTNode> nodes) {
         variableTypes.addFirst(new HashMap<>());
-        stylerule.body.forEach(child -> {
+        nodes.forEach(child -> {
             if (child instanceof Declaration declaration) {
                 checkDeclaration(declaration);
             } else if (child instanceof VariableAssignment variableAssignment) {
@@ -65,7 +69,17 @@ public class Checker {
     }
 
     private void checkIfClause(IfClause ifClause) {
-        //TODO: add
+        if (checkExpression(ifClause.conditionalExpression) != ExpressionType.BOOL) {
+            ifClause.setError("If clause conditional expression must be BOOL");
+        }
+        checkBlock(ifClause.body);
+        if (ifClause.elseClause != null) {
+            checkElseClause(ifClause.elseClause);
+        }
+    }
+
+    private void checkElseClause(ElseClause elseClause) {
+        checkBlock(elseClause.body);
     }
 
     private void checkVariableAssignment(VariableAssignment variableAssignment) {
@@ -107,7 +121,7 @@ public class Checker {
     private ExpressionType checkOperation(Operation operation) {
         if (checkExpression(operation.lhs) == ExpressionType.COLOR || checkExpression(operation.rhs) == ExpressionType.COLOR
                 || checkExpression(operation.lhs) == ExpressionType.BOOL || checkExpression(operation.rhs) == ExpressionType.BOOL) {
-            operation.setError("Operations may not use bool literals or color literals ");
+            operation.setError("Operations may not use BOOL or COLOR");
             return ExpressionType.UNDEFINED;
         }
         if (checkExpression(operation.lhs) == ExpressionType.UNDEFINED || checkExpression(operation.rhs) == ExpressionType.UNDEFINED) {
@@ -123,7 +137,7 @@ public class Checker {
 
     private ExpressionType checkMultiplyOperation(Operation operation) {
         if (checkExpression(operation.lhs) != ExpressionType.SCALAR && checkExpression(operation.rhs) != ExpressionType.SCALAR) {
-            operation.setError("Multiply operations must have at least 1 scalar literal");
+            operation.setError("Multiply operations must have at least 1 SCALAR");
             return ExpressionType.UNDEFINED;
         }
         return checkExpression(operation.lhs) != ExpressionType.SCALAR ? checkExpression(operation.lhs)
@@ -131,7 +145,7 @@ public class Checker {
     }
 
     private ExpressionType checkAddOrSubtractOperation(Operation operation) {
-        if (checkExpression(operation.lhs) == checkExpression(operation.rhs)) {
+        if (checkExpression(operation.lhs) != checkExpression(operation.rhs)) {
             operation.setError("Add and subtract operations must have matching literals");
             return ExpressionType.UNDEFINED;
         }
