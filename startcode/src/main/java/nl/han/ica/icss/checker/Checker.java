@@ -23,6 +23,7 @@ public class Checker {
     }
 
     private void checkStylesheet(Stylesheet stylesheet) {
+        variableTypes.addFirst(new HashMap<>());
         stylesheet.getChildren().forEach(child -> {
             if (child instanceof VariableAssignment variableAssignment) {
                 checkVariableAssignment(variableAssignment);
@@ -30,17 +31,35 @@ public class Checker {
                 checkStylerule(stylerule);
             }
         });
+        variableTypes.clear();
     }
 
     private void checkStylerule(Stylerule stylerule) {
-        //TODO: implement
+        variableTypes.addFirst(new HashMap<>());
+        stylerule.getChildren().forEach(child -> {
+            if (child instanceof Declaration declaration) {
+                checkDeclaration(declaration);
+            } else if (child instanceof VariableAssignment variableAssignment) {
+                checkVariableAssignment(variableAssignment);
+            } else if (child instanceof IfClause ifClause) {
+                checkIfClause(ifClause);
+            }
+        });
+        variableTypes.removeFirst();
+    }
+
+    private void checkDeclaration(Declaration declaration) {
+        //TODO: add
+    }
+
+    private void checkIfClause(IfClause ifClause) {
+        //TODO: add
     }
 
     private void checkVariableAssignment(VariableAssignment variableAssignment) {
-        if (variableAssignment.getChildren().get(1) instanceof Operation operation) {
-            checkOperation(operation);
-        }
-        //TODO: add to variableTypes
+        variableTypes.getFirst().put(
+                ((VariableReference) variableAssignment.getChildren().get(0)).name,
+                checkExpression((Expression) variableAssignment.getChildren().get(1)));
     }
 
     private ExpressionType checkExpression(Expression expression) {
@@ -48,8 +67,20 @@ public class Checker {
             return checkOperation(operation);
         } else if (expression instanceof Literal literal) {
             return checkLiteral(literal);
+        } else if (expression instanceof VariableReference variableReference) {
+            return checkVariableReference(variableReference);
         }
-        //TODO: add VariableReference check
+        return ExpressionType.UNDEFINED;
+    }
+
+    private ExpressionType checkVariableReference(VariableReference variableReference) {
+        for (int scope = 0; scope < variableTypes.getSize(); scope++) {
+            System.out.println(variableTypes.get(scope).get(variableReference.name));
+            if (variableTypes.get(scope).get(variableReference.name) != null) {
+                return variableTypes.get(scope).get(variableReference.name);
+            }
+        }
+        variableReference.setError("Variable has not been initialized");
         return ExpressionType.UNDEFINED;
     }
 
