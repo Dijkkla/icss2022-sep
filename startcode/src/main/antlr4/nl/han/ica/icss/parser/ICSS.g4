@@ -53,11 +53,11 @@ block: OPEN_BRACE (declaration | variableAssignment | ifClause)* CLOSE_BRACE;
 
 declaration: propertyName COLON operation SEMICOLON;
 propertyName: LOWER_IDENT;
-literal: COLOR#colorLiteral | PIXELSIZE#pixelLiteral | PERCENTAGE#percentageLiteral | SCALAR#scalarLiteral | boolLiteral#bool;
-boolLiteral: TRUE | FALSE;
+literal: COLOR#colorLiteral | PIXELSIZE#pixelLiteral | PERCENTAGE#percentageLiteral | SCALAR#scalarLiteral;
 
 variableAssignment: variableReference ASSIGNMENT_OPERATOR operation SEMICOLON;
 variableReference: CAPITAL_IDENT;
+boolLiteral: TRUE | FALSE;
 
 operation
     : operation MUL operation
