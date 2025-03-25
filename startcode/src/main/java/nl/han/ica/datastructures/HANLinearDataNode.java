@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.NonNull;
 
 @Data
-public class HANStackElement<T> {
+public class HANLinearDataNode<T> {
     @NonNull
     private T value;
-    private HANStackElement<T> next;
+    private HANLinearDataNode<T> next;
 }
