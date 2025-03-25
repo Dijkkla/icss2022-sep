@@ -117,7 +117,7 @@ public class ASTListener extends ICSSBaseListener {
 
     @Override
     public void enterAddOrSubtractOperation(ICSSParser.AddOrSubtractOperationContext ctx) {
-        Operation operation = ctx.getChild(1).getText().equals("+") ? new AddOperation() : new SubtractOperation();
+        Operation operation = ctx.PLUS() != null ? new AddOperation() : new SubtractOperation();
         currentContainer.push(operation);
     }
 
