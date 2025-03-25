@@ -54,7 +54,12 @@ public class Checker {
     }
 
     private ExpressionType checkLiteral(Literal literal) {
-        return literal instanceof BoolLiteral ? ExpressionType.BOOL : literal instanceof ColorLiteral ? ExpressionType.COLOR : literal instanceof PercentageLiteral ? ExpressionType.PERCENTAGE : literal instanceof PixelLiteral ? ExpressionType.PIXEL : literal instanceof ScalarLiteral ? ExpressionType.SCALAR : ExpressionType.UNDEFINED;
+        return literal instanceof BoolLiteral ? ExpressionType.BOOL
+                : literal instanceof ColorLiteral ? ExpressionType.COLOR
+                : literal instanceof PercentageLiteral ? ExpressionType.PERCENTAGE
+                : literal instanceof PixelLiteral ? ExpressionType.PIXEL
+                : literal instanceof ScalarLiteral ? ExpressionType.SCALAR
+                : ExpressionType.UNDEFINED;
     }
 
     private ExpressionType checkOperation(Operation operation) {
@@ -65,7 +70,9 @@ public class Checker {
             operation.setError("Operations may not use bool literals or color literals ");
             return ExpressionType.UNDEFINED;
         }
-        if (operation.getChildren().stream().map(expression -> checkExpression((Expression) expression)).anyMatch(expressionType -> expressionType == ExpressionType.UNDEFINED)) {
+        if (operation.getChildren().stream()
+                .map(expression -> checkExpression((Expression) expression))
+                .anyMatch(expressionType -> expressionType == ExpressionType.UNDEFINED)) {
             return ExpressionType.UNDEFINED;
         }
         if (operation instanceof MultiplyOperation) {
@@ -77,15 +84,25 @@ public class Checker {
     }
 
     private ExpressionType checkMultiplyOperation(Operation operation) {
-        if (operation.getChildren().stream().map(expression -> checkExpression((Expression) expression)).noneMatch(expressionType -> expressionType == ExpressionType.SCALAR)) {
+        if (operation.getChildren().stream()
+                .map(expression -> checkExpression((Expression) expression))
+                .noneMatch(expressionType -> expressionType == ExpressionType.SCALAR)) {
             operation.setError("Multiply operations must have at least 1 scalar literal");
             return ExpressionType.UNDEFINED;
         }
-        return operation.getChildren().stream().map(expression -> checkExpression((Expression) expression)).filter(expressionType -> expressionType != ExpressionType.SCALAR).findFirst().orElse(ExpressionType.SCALAR);
+        return operation.getChildren().stream()
+                .map(expression -> checkExpression((Expression) expression))
+                .filter(expressionType -> expressionType != ExpressionType.SCALAR)
+                .findFirst()
+                .orElse(ExpressionType.SCALAR);
     }
 
     private ExpressionType checkAddOrSubtractOperation(Operation operation) {
-        if (operation.getChildren().stream().map(expression -> checkExpression((Expression) expression)).filter(expressionType -> expressionType != ExpressionType.UNDEFINED).distinct().count() > 1) {
+        if (operation.getChildren().stream()
+                .map(expression -> checkExpression((Expression) expression))
+                .filter(expressionType -> expressionType != ExpressionType.UNDEFINED)
+                .distinct()
+                .count() > 1) {
             operation.setError("Add and subtract operations must have matching literals");
             return ExpressionType.UNDEFINED;
         }
