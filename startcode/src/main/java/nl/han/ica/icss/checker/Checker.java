@@ -10,11 +10,20 @@ import nl.han.ica.icss.ast.operations.SubtractOperation;
 import nl.han.ica.icss.ast.types.ExpressionType;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class Checker {
 
     private IHANLinkedList<HashMap<String, ExpressionType>> variableTypes;
+
+    private final Map<String, List<ExpressionType>> declarationTypes = Map.of(
+            "color", List.of(ExpressionType.COLOR),
+            "background-color", List.of(ExpressionType.COLOR),
+            "width", List.of(ExpressionType.PIXEL, ExpressionType.PERCENTAGE),
+            "height", List.of(ExpressionType.PIXEL, ExpressionType.PERCENTAGE)
+    );
 
     public void check(AST ast) {
         variableTypes = new HANLinkedList<>();
@@ -49,7 +58,10 @@ public class Checker {
     }
 
     private void checkDeclaration(Declaration declaration) {
-        //TODO: add
+        if (checkExpression(declaration.expression) != ExpressionType.UNDEFINED
+                && !declarationTypes.get(declaration.property.name).contains(checkExpression(declaration.expression))) {
+            declaration.setError("Property \"" + declaration.property.name + "\" may not have a value of type: " + checkExpression(declaration.expression));
+        }
     }
 
     private void checkIfClause(IfClause ifClause) {
@@ -75,12 +87,11 @@ public class Checker {
 
     private ExpressionType checkVariableReference(VariableReference variableReference) {
         for (int scope = 0; scope < variableTypes.getSize(); scope++) {
-            System.out.println(variableTypes.get(scope).get(variableReference.name));
             if (variableTypes.get(scope).get(variableReference.name) != null) {
                 return variableTypes.get(scope).get(variableReference.name);
             }
         }
-        variableReference.setError("Variable has not been initialized");
+        variableReference.setError("Variable \"" + variableReference.name + "\" has not been initialized");
         return ExpressionType.UNDEFINED;
     }
 
