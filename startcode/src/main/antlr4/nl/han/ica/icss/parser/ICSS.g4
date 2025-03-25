@@ -51,18 +51,19 @@ stylerule: selector block;
 selector: CLASS_IDENT#classSelector | ID_IDENT#idSelector | LOWER_IDENT#tagSelector;
 block: OPEN_BRACE (declaration | variableAssignment | ifClause)* CLOSE_BRACE;
 
-declaration: propertyName COLON operation SEMICOLON;
+declaration: propertyName COLON (operation | colorLiteral) SEMICOLON;
 propertyName: LOWER_IDENT;
-literal: COLOR#colorLiteral | PIXELSIZE#pixelLiteral | PERCENTAGE#percentageLiteral | SCALAR#scalarLiteral;
+numericLiteral: PIXELSIZE#pixelLiteral | PERCENTAGE#percentageLiteral | SCALAR#scalarLiteral;
+colorLiteral: COLOR;
 
-variableAssignment: variableReference ASSIGNMENT_OPERATOR (operation | boolLiteral) SEMICOLON;
+variableAssignment: variableReference ASSIGNMENT_OPERATOR (operation | boolLiteral | colorLiteral) SEMICOLON;
 variableReference: CAPITAL_IDENT;
 boolLiteral: TRUE | FALSE;
 
 operation
     : operation MUL operation#multiplyOperation
     | operation (PLUS | MIN) operation#addOrSubtractOperation
-    | (literal | variableReference)#terminalOperation
+    | (numericLiteral | variableReference)#terminalOperation
     ;
 
 ifClause: IF BOX_BRACKET_OPEN (variableReference | boolLiteral) BOX_BRACKET_CLOSE
