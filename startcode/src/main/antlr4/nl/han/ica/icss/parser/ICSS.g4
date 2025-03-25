@@ -55,14 +55,14 @@ declaration: propertyName COLON operation SEMICOLON;
 propertyName: LOWER_IDENT;
 literal: COLOR#colorLiteral | PIXELSIZE#pixelLiteral | PERCENTAGE#percentageLiteral | SCALAR#scalarLiteral;
 
-variableAssignment: variableReference ASSIGNMENT_OPERATOR operation SEMICOLON;
+variableAssignment: variableReference ASSIGNMENT_OPERATOR (operation | boolLiteral) SEMICOLON;
 variableReference: CAPITAL_IDENT;
 boolLiteral: TRUE | FALSE;
 
 operation
-    : operation MUL operation
-    | operation (PLUS | MIN) operation
-    | (literal | variableReference)
+    : operation MUL operation#multiplyOperation
+    | operation (PLUS | MIN) operation#addOrSubtractOperation
+    | (literal | variableReference)#terminalOperation
     ;
 
 ifClause: IF BOX_BRACKET_OPEN (variableReference | boolLiteral) BOX_BRACKET_CLOSE

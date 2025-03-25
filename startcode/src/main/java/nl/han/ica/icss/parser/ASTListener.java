@@ -104,32 +104,27 @@ public class ASTListener extends ICSSBaseListener {
     }
 
     @Override
-    public void enterOperation(ICSSParser.OperationContext ctx) {
-        if (ctx.getChildCount() > 1) {
-            Operation operation = null;
-            switch (ctx.getChild(1).getText()) {
-                case "*":
-                    operation = new MultiplyOperation();
-                    break;
-                case "+":
-                    operation = new AddOperation();
-                    break;
-                case "-":
-                    operation = new SubtractOperation();
-                    break;
-                default:
-                    break;
-            }
-            currentContainer.push(operation);
-        }
+    public void enterMultiplyOperation(ICSSParser.MultiplyOperationContext ctx) {
+        MultiplyOperation multiplyOperation = new MultiplyOperation();
+        currentContainer.push(multiplyOperation);
     }
 
     @Override
-    public void exitOperation(ICSSParser.OperationContext ctx) {
-        if (currentContainer.peek() instanceof Operation) {
-            Operation operation = (Operation) currentContainer.pop();
-            currentContainer.peek().addChild(operation);
-        }
+    public void exitMultiplyOperation(ICSSParser.MultiplyOperationContext ctx) {
+        MultiplyOperation multiplyOperation = (MultiplyOperation) currentContainer.pop();
+        currentContainer.peek().addChild(multiplyOperation);
+    }
+
+    @Override
+    public void enterAddOrSubtractOperation(ICSSParser.AddOrSubtractOperationContext ctx) {
+        Operation operation = ctx.getChild(1).getText().equals("+") ? new AddOperation() : new SubtractOperation();
+        currentContainer.push(operation);
+    }
+
+    @Override
+    public void exitAddOrSubtractOperation(ICSSParser.AddOrSubtractOperationContext ctx) {
+        Operation operation = (Operation) currentContainer.pop();
+        currentContainer.peek().addChild(operation);
     }
 
     @Override
@@ -190,5 +185,29 @@ public class ASTListener extends ICSSBaseListener {
     public void exitBoolLiteral(ICSSParser.BoolLiteralContext ctx) {
         BoolLiteral boolLiteral = (BoolLiteral) currentContainer.pop();
         currentContainer.peek().addChild(boolLiteral);
+    }
+
+    @Override
+    public void enterVariableAssignment(ICSSParser.VariableAssignmentContext ctx) {
+        VariableAssignment variableAssignment = new VariableAssignment();
+        currentContainer.push(variableAssignment);
+    }
+
+    @Override
+    public void exitVariableAssignment(ICSSParser.VariableAssignmentContext ctx) {
+        VariableAssignment variableAssignment = (VariableAssignment) currentContainer.pop();
+        currentContainer.peek().addChild(variableAssignment);
+    }
+
+    @Override
+    public void enterVariableReference(ICSSParser.VariableReferenceContext ctx) {
+        VariableReference variableReference = new VariableReference(ctx.getText());
+        currentContainer.push(variableReference);
+    }
+
+    @Override
+    public void exitVariableReference(ICSSParser.VariableReferenceContext ctx) {
+        VariableReference variableReference = (VariableReference) currentContainer.pop();
+        currentContainer.peek().addChild(variableReference);
     }
 }
