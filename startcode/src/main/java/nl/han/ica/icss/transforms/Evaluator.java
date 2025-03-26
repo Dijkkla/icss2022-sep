@@ -3,11 +3,15 @@ package nl.han.ica.icss.transforms;
 import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
+import nl.han.ica.icss.ast.literals.BoolLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.literals.ScalarLiteral;
-import nl.han.ica.icss.ast.types.OperationType;
+import nl.han.ica.icss.ast.operations.AddOperation;
+import nl.han.ica.icss.ast.operations.MultiplyOperation;
+import nl.han.ica.icss.ast.operations.SubtractOperation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Evaluator implements Transform {
@@ -27,19 +31,48 @@ public class Evaluator implements Transform {
 
     private void transformStylesheet(Stylesheet stylesheet) {
         variableValues.addFirst(new HashMap<>());
-        stylesheet.body.forEach(child -> {
-            switch (child) {
+        stylesheet.body.forEach(node -> {
+            switch (node) {
                 case VariableAssignment variableAssignment -> transformVariableAssignment(variableAssignment);
                 case Stylerule stylerule -> transformStylerule(stylerule);
-                case null, default -> {
-                }
+                default -> throw new IllegalStateException("Unexpected value: " + node);
             }
         });
         variableValues.clear();
     }
 
     private void transformStylerule(Stylerule stylerule) {
-        //TODO: implement
+        transformBlock(stylerule.body);
+    }
+
+    private void transformBlock(ArrayList<ASTNode> nodes) {
+        variableValues.addFirst(new HashMap<>());
+        nodes.forEach(node -> {
+            switch (node) {
+                case Declaration declaration -> transformDeclaration(declaration);
+                case VariableAssignment variableAssignment -> transformVariableAssignment(variableAssignment);
+                case IfClause ifClause -> transformIfClause(ifClause);
+                default -> throw new IllegalStateException("Unexpected value: " + node);
+            }
+        });
+        variableValues.removeFirst();
+    }
+
+    private void transformDeclaration(Declaration declaration) {
+        declaration.expression = transformExpression(declaration.expression);
+    }
+
+    private void transformIfClause(IfClause ifClause) {
+        if (((BoolLiteral) ifClause.conditionalExpression).value) {
+            transformBlock(ifClause.body);
+        } else {
+            transformElseClause(ifClause.elseClause);
+        }
+        //TODO: remove ifClause from AST
+    }
+
+    private void transformElseClause(ElseClause elseClause) {
+        transformBlock(elseClause.body);
     }
 
     private void transformVariableAssignment(VariableAssignment variableAssignment) {
@@ -47,6 +80,7 @@ public class Evaluator implements Transform {
         variableValues.getFirst().put(
                 variableAssignment.name.name,
                 (Literal) variableAssignment.expression);
+        //TODO: remove variableAssignments from AST
     }
 
     private Literal transformExpression(Expression expression) {
@@ -81,20 +115,17 @@ public class Evaluator implements Transform {
                     default -> 0;
                 })
                 .toArray();
-        int returnValue = evaluateOperation(operation.operationType, values[0], values[1]);
+        int returnValue = switch (operation) {
+            case MultiplyOperation ignored -> evaluateMultiplyOperation(values[0], values[1]);
+            case AddOperation ignored -> evaluateAddOperation(values[0], values[1]);
+            case SubtractOperation ignored -> evaluateSubtractOperation(values[0], values[1]);
+            default -> throw new IllegalStateException("Unexpected value: " + operation);
+        };
         return switch (operation.expressionType) {
             case PERCENTAGE -> new PercentageLiteral(returnValue);
             case PIXEL -> new PixelLiteral(returnValue);
             case SCALAR -> new ScalarLiteral(returnValue);
             default -> null;
-        };
-    }
-
-    private int evaluateOperation(OperationType operationType, int lhs, int rhs) {
-        return switch (operationType) {
-            case MULTIPLY -> evaluateMultiplyOperation(lhs, rhs);
-            case ADD -> evaluateAddOperation(lhs, rhs);
-            case SUBTRACT -> evaluateSubtractOperation(lhs, rhs);
         };
     }
 
