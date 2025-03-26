@@ -17,16 +17,10 @@ import java.util.List;
 
 public class Evaluator implements Transform {
 
-    private IHANLinkedList<HashMap<String, Literal>> variableValues;
-
-//    public Evaluator() {
-//        variableValues = new HANLinkedList<>();
-//    }
+    private final IHANLinkedList<HashMap<String, Literal>> variableValues = new HANLinkedList<>();
 
     @Override
     public void apply(AST ast) {
-        variableValues = new HANLinkedList<>();
-
         transformStylesheet(ast.root);
     }
 
