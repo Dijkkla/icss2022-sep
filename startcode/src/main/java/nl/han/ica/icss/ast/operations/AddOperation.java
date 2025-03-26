@@ -4,7 +4,9 @@ import nl.han.ica.icss.ast.Operation;
 import nl.han.ica.icss.ast.types.OperationType;
 
 public class AddOperation extends Operation {
-    public OperationType operationType = OperationType.ADD;
+    public AddOperation() {
+        super(OperationType.ADD);
+    }
 
     @Override
     public String getNodeLabel() {

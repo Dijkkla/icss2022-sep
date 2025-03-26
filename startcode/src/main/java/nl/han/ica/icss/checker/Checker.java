@@ -8,6 +8,7 @@ import nl.han.ica.icss.ast.operations.AddOperation;
 import nl.han.ica.icss.ast.operations.MultiplyOperation;
 import nl.han.ica.icss.ast.operations.SubtractOperation;
 import nl.han.ica.icss.ast.types.ExpressionType;
+import nl.han.ica.icss.ast.types.OperationType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -127,12 +128,11 @@ public class Checker {
         if (checkExpression(operation.lhs) == ExpressionType.UNDEFINED || checkExpression(operation.rhs) == ExpressionType.UNDEFINED) {
             return ExpressionType.UNDEFINED;
         }
-        if (operation instanceof MultiplyOperation) {
-            return checkMultiplyOperation(operation);
-        } else if (operation instanceof AddOperation || operation instanceof SubtractOperation) {
-            return checkAddOrSubtractOperation(operation);
-        }
-        return ExpressionType.UNDEFINED;
+        return switch (operation.operationType) {
+            case MULTIPLY -> checkMultiplyOperation(operation);
+            case ADD, SUBTRACT -> checkAddOrSubtractOperation(operation);
+            default -> ExpressionType.UNDEFINED;
+        };
     }
 
     private ExpressionType checkMultiplyOperation(Operation operation) {

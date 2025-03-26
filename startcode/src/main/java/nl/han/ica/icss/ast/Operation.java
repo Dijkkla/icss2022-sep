@@ -1,6 +1,5 @@
 package nl.han.ica.icss.ast;
 
-import nl.han.ica.icss.ast.types.ExpressionType;
 import nl.han.ica.icss.ast.types.OperationType;
 
 import java.util.ArrayList;
@@ -9,7 +8,11 @@ public abstract class Operation extends Expression {
 
     public Expression lhs;
     public Expression rhs;
-    public OperationType operationType;
+    public final OperationType operationType;
+
+    protected Operation(OperationType operationType) {
+        this.operationType = operationType;
+    }
 
     @Override
     public ArrayList<ASTNode> getChildren() {
