@@ -90,17 +90,12 @@ public class Checker {
     }
 
     private ExpressionType checkExpression(Expression expression) {
-        ExpressionType expressionType;
-        if (expression instanceof Operation operation) {
-            expressionType = checkOperation(operation);
-        } else if (expression instanceof Literal literal) {
-            expressionType = checkLiteral(literal);
-        } else if (expression instanceof VariableReference variableReference) {
-            expressionType = checkVariableReference(variableReference);
-        } else {
-            expressionType = ExpressionType.UNDEFINED;
-        }
-        expression.setExpressionType(expressionType);
+        expression.setExpressionType(switch (expression) {
+            case Operation operation -> checkOperation(operation);
+            case Literal literal -> checkLiteral(literal);
+            case VariableReference variableReference -> checkVariableReference(variableReference);
+            default -> ExpressionType.UNDEFINED;
+        });
         return expression.expressionType;
     }
 
