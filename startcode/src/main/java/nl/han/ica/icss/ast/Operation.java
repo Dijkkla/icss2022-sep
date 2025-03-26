@@ -8,11 +8,6 @@ public abstract class Operation extends Expression {
 
     public Expression lhs;
     public Expression rhs;
-    public final OperationType operationType;
-
-    protected Operation(OperationType operationType) {
-        this.operationType = operationType;
-    }
 
     @Override
     public ArrayList<ASTNode> getChildren() {

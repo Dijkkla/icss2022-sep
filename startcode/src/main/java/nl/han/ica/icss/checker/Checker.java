@@ -3,12 +3,10 @@ package nl.han.ica.icss.checker;
 import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
-import nl.han.ica.icss.ast.literals.*;
 import nl.han.ica.icss.ast.operations.AddOperation;
 import nl.han.ica.icss.ast.operations.MultiplyOperation;
 import nl.han.ica.icss.ast.operations.SubtractOperation;
 import nl.han.ica.icss.ast.types.ExpressionType;
-import nl.han.ica.icss.ast.types.OperationType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,11 +32,11 @@ public class Checker {
 
     private void checkStylesheet(Stylesheet stylesheet) {
         variableTypes.addFirst(new HashMap<>());
-        stylesheet.body.forEach(child -> {
-            if (child instanceof VariableAssignment variableAssignment) {
-                checkVariableAssignment(variableAssignment);
-            } else if (child instanceof Stylerule stylerule) {
-                checkStylerule(stylerule);
+        stylesheet.body.forEach(node -> {
+            switch (node) {
+                case VariableAssignment variableAssignment -> checkVariableAssignment(variableAssignment);
+                case Stylerule stylerule -> checkStylerule(stylerule);
+                default -> throw new IllegalStateException("Unexpected value: " + node);
             }
         });
         variableTypes.clear();
@@ -50,13 +48,12 @@ public class Checker {
 
     private void checkBlock(List<ASTNode> nodes) {
         variableTypes.addFirst(new HashMap<>());
-        nodes.forEach(child -> {
-            if (child instanceof Declaration declaration) {
-                checkDeclaration(declaration);
-            } else if (child instanceof VariableAssignment variableAssignment) {
-                checkVariableAssignment(variableAssignment);
-            } else if (child instanceof IfClause ifClause) {
-                checkIfClause(ifClause);
+        nodes.forEach(node -> {
+            switch (node) {
+                case Declaration declaration -> checkDeclaration(declaration);
+                case VariableAssignment variableAssignment -> checkVariableAssignment(variableAssignment);
+                case IfClause ifClause -> checkIfClause(ifClause);
+                default -> throw new IllegalStateException("Unexpected value: " + node);
             }
         });
         variableTypes.removeFirst();
@@ -122,9 +119,10 @@ public class Checker {
         if (checkExpression(operation.lhs) == ExpressionType.UNDEFINED || checkExpression(operation.rhs) == ExpressionType.UNDEFINED) {
             return ExpressionType.UNDEFINED;
         }
-        return switch (operation.operationType) {
-            case MULTIPLY -> checkMultiplyOperation(operation);
-            case ADD, SUBTRACT -> checkAddOrSubtractOperation(operation);
+        return switch (operation) {
+            case MultiplyOperation ignored -> checkMultiplyOperation(operation);
+            case AddOperation ignored -> checkAddOrSubtractOperation(operation);
+            case SubtractOperation ignored -> checkAddOrSubtractOperation(operation);
             default -> ExpressionType.UNDEFINED;
         };
     }
