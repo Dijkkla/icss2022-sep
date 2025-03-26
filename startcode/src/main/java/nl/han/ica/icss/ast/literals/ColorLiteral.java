@@ -7,10 +7,10 @@ import java.util.Objects;
 
 public class ColorLiteral extends Literal {
     public String value;
-    public ExpressionType expressionType = ExpressionType.COLOR;
 
     public ColorLiteral(String value) {
         this.value = value;
+        expressionType = ExpressionType.COLOR;
     }
     @Override
     public String getNodeLabel() {

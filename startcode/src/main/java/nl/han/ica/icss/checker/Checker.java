@@ -90,14 +90,18 @@ public class Checker {
     }
 
     private ExpressionType checkExpression(Expression expression) {
+        ExpressionType expressionType;
         if (expression instanceof Operation operation) {
-            return checkOperation(operation);
+            expressionType = checkOperation(operation);
         } else if (expression instanceof Literal literal) {
-            return checkLiteral(literal);
+            expressionType = checkLiteral(literal);
         } else if (expression instanceof VariableReference variableReference) {
-            return checkVariableReference(variableReference);
+            expressionType = checkVariableReference(variableReference);
+        } else {
+            expressionType = ExpressionType.UNDEFINED;
         }
-        return expression.setExpressionType(ExpressionType.UNDEFINED);
+        expression.setExpressionType(expressionType);
+        return expression.expressionType;
     }
 
     private ExpressionType checkVariableReference(VariableReference variableReference) {
@@ -111,12 +115,7 @@ public class Checker {
     }
 
     private ExpressionType checkLiteral(Literal literal) {
-        return literal instanceof BoolLiteral ? ExpressionType.BOOL
-                : literal instanceof ColorLiteral ? ExpressionType.COLOR
-                : literal instanceof PercentageLiteral ? ExpressionType.PERCENTAGE
-                : literal instanceof PixelLiteral ? ExpressionType.PIXEL
-                : literal instanceof ScalarLiteral ? ExpressionType.SCALAR
-                : ExpressionType.UNDEFINED;
+        return literal.expressionType;
     }
 
     private ExpressionType checkOperation(Operation operation) {

@@ -7,13 +7,14 @@ import java.util.Objects;
 
 public class ScalarLiteral extends Literal {
     public int value;
-    public ExpressionType expressionType = ExpressionType.SCALAR;
 
     public ScalarLiteral(int value) {
         this.value = value;
+        expressionType = ExpressionType.SCALAR;
     }
     public ScalarLiteral(String text) {
         this.value = Integer.parseInt(text);
+        expressionType = ExpressionType.SCALAR;
     }
     @Override
     public String getNodeLabel() {

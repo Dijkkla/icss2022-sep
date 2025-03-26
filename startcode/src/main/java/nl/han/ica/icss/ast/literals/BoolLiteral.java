@@ -7,13 +7,14 @@ import java.util.Objects;
 
 public class BoolLiteral extends Literal {
     public boolean value;
-    public ExpressionType expressionType = ExpressionType.BOOL;
 
     public BoolLiteral(boolean value) {
         this.value = value;
+        expressionType = ExpressionType.BOOL;
     }
     public BoolLiteral(String text) {
         this.value = text.equals("TRUE");
+        expressionType = ExpressionType.BOOL;
     }
     @Override
     public String getNodeLabel() {
