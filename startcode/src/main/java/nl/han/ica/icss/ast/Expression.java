@@ -1,3 +1,12 @@
 package nl.han.ica.icss.ast;
 
-public abstract class Expression extends ASTNode { }
+import nl.han.ica.icss.ast.types.ExpressionType;
+
+public abstract class Expression extends ASTNode {
+    public ExpressionType expressionType;
+
+    public ExpressionType setExpressionType(ExpressionType expressionType) {
+        this.expressionType = expressionType;
+        return this.expressionType;
+    }
+}

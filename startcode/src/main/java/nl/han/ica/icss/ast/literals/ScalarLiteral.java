@@ -1,11 +1,13 @@
 package nl.han.ica.icss.ast.literals;
 
 import nl.han.ica.icss.ast.Literal;
+import nl.han.ica.icss.ast.types.ExpressionType;
 
 import java.util.Objects;
 
 public class ScalarLiteral extends Literal {
     public int value;
+    public ExpressionType expressionType = ExpressionType.SCALAR;
 
     public ScalarLiteral(int value) {
         this.value = value;

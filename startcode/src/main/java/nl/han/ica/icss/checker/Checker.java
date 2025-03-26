@@ -96,7 +96,7 @@ public class Checker {
         } else if (expression instanceof VariableReference variableReference) {
             return checkVariableReference(variableReference);
         }
-        return ExpressionType.UNDEFINED;
+        return expression.setExpressionType(ExpressionType.UNDEFINED);
     }
 
     private ExpressionType checkVariableReference(VariableReference variableReference) {

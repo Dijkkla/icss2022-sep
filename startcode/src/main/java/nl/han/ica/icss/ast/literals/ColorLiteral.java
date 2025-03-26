@@ -1,11 +1,13 @@
 package nl.han.ica.icss.ast.literals;
 
 import nl.han.ica.icss.ast.Literal;
+import nl.han.ica.icss.ast.types.ExpressionType;
 
 import java.util.Objects;
 
 public class ColorLiteral extends Literal {
     public String value;
+    public ExpressionType expressionType = ExpressionType.COLOR;
 
     public ColorLiteral(String value) {
         this.value = value;

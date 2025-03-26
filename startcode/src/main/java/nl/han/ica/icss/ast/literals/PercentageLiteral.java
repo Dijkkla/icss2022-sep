@@ -1,11 +1,13 @@
 package nl.han.ica.icss.ast.literals;
 
 import nl.han.ica.icss.ast.Literal;
+import nl.han.ica.icss.ast.types.ExpressionType;
 
 import java.util.Objects;
 
 public class PercentageLiteral extends Literal {
     public int value;
+    public ExpressionType expressionType = ExpressionType.PERCENTAGE;
 
     public PercentageLiteral(int value) {
         this.value = value;
