@@ -13,6 +13,7 @@ import nl.han.ica.icss.ast.operations.SubtractOperation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Evaluator implements Transform {
 
@@ -38,6 +39,7 @@ public class Evaluator implements Transform {
                 default -> throw new IllegalStateException("Unexpected value: " + node);
             }
         });
+        stylesheet.body.removeIf(node -> (node instanceof VariableAssignment));
         variableValues.clear();
     }
 
@@ -45,42 +47,43 @@ public class Evaluator implements Transform {
         transformBlock(stylerule.body);
     }
 
-    private void transformBlock(ArrayList<ASTNode> nodes) {
+    private ArrayList<ASTNode> transformBlock(ArrayList<ASTNode> nodes) {
         variableValues.addFirst(new HashMap<>());
+        List<ASTNode> newNodes = new ArrayList<>();
         nodes.forEach(node -> {
             switch (node) {
                 case Declaration declaration -> transformDeclaration(declaration);
                 case VariableAssignment variableAssignment -> transformVariableAssignment(variableAssignment);
-                case IfClause ifClause -> transformIfClause(ifClause);
+                case IfClause ifClause -> newNodes.addAll(transformIfClause(ifClause));
                 default -> throw new IllegalStateException("Unexpected value: " + node);
             }
         });
+        nodes.removeIf(node -> (node instanceof VariableAssignment || node instanceof IfClause));
+        nodes.addAll(newNodes);
         variableValues.removeFirst();
+        return nodes;
     }
 
     private void transformDeclaration(Declaration declaration) {
         declaration.expression = transformExpression(declaration.expression);
     }
 
-    private void transformIfClause(IfClause ifClause) {
-        if (((BoolLiteral) ifClause.conditionalExpression).value) {
-            transformBlock(ifClause.body);
+    private ArrayList<ASTNode> transformIfClause(IfClause ifClause) {
+        if (((BoolLiteral) transformExpression(ifClause.conditionalExpression)).value) {
+            return transformBlock(ifClause.body);
         } else {
-            transformElseClause(ifClause.elseClause);
+            return transformElseClause(ifClause.elseClause);
         }
-        //TODO: remove ifClause from AST
     }
 
-    private void transformElseClause(ElseClause elseClause) {
-        transformBlock(elseClause.body);
+    private ArrayList<ASTNode> transformElseClause(ElseClause elseClause) {
+        return transformBlock(elseClause.body);
     }
 
     private void transformVariableAssignment(VariableAssignment variableAssignment) {
-        variableAssignment.expression = transformExpression(variableAssignment.expression);
         variableValues.getFirst().put(
                 variableAssignment.name.name,
-                (Literal) variableAssignment.expression);
-        //TODO: remove variableAssignments from AST
+                transformExpression(variableAssignment.expression));
     }
 
     private Literal transformExpression(Expression expression) {
@@ -88,7 +91,7 @@ public class Evaluator implements Transform {
             case Operation operation -> transformOperation(operation);
             case Literal literal -> transformLiteral(literal);
             case VariableReference variableReference -> transformVariableReference(variableReference);
-            case null, default -> null;
+            default -> throw new IllegalStateException("Unexpected value: " + expression);
         };
     }
 
@@ -98,7 +101,7 @@ public class Evaluator implements Transform {
                 return variableValues.get(scope).get(variableReference.name);
             }
         }
-        return null;
+        throw new RuntimeException("Could not find variable \"" + variableReference.name + "\"");
     }
 
     private Literal transformLiteral(Literal literal) {
@@ -112,7 +115,7 @@ public class Evaluator implements Transform {
                     case PERCENTAGE -> ((PercentageLiteral) literal).value;
                     case PIXEL -> ((PixelLiteral) literal).value;
                     case SCALAR -> ((ScalarLiteral) literal).value;
-                    default -> 0;
+                    default -> throw new IllegalStateException("Unexpected value: " + literal.expressionType);
                 })
                 .toArray();
         int returnValue = switch (operation) {
@@ -125,7 +128,7 @@ public class Evaluator implements Transform {
             case PERCENTAGE -> new PercentageLiteral(returnValue);
             case PIXEL -> new PixelLiteral(returnValue);
             case SCALAR -> new ScalarLiteral(returnValue);
-            default -> null;
+            default -> throw new IllegalStateException("Unexpected value: " + operation.expressionType);
         };
     }
 
