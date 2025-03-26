@@ -39,8 +39,7 @@ public class ASTListener extends ICSSBaseListener {
 
     @Override
     public void exitStylesheet(ICSSParser.StylesheetContext ctx) {
-        Stylesheet stylesheet = (Stylesheet) currentContainer.pop();
-        ast.root = stylesheet;
+        ast.root = (Stylesheet) currentContainer.pop();
     }
 
     @Override
@@ -129,7 +128,7 @@ public class ASTListener extends ICSSBaseListener {
 
     @Override
     public void enterColorLiteral(ICSSParser.ColorLiteralContext ctx) {
-        ColorLiteral colorLiteral = new ColorLiteral(ctx.getText());
+        ColorLiteral colorLiteral = new ColorLiteral(ctx.getText().toLowerCase());
         currentContainer.push(colorLiteral);
     }
 
