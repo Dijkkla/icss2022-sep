@@ -23,7 +23,7 @@ public class Checker {
             OperationType.ADD, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
             OperationType.SUBTRACT, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
             OperationType.MULTIPLY, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
-            OperationType.DIVIDE, List.of(ExpressionType.SCALAR),
+            OperationType.DIVIDE, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
             OperationType.POWER, List.of(ExpressionType.SCALAR)
     );
     private IHANLinkedList<HashMap<String, ExpressionType>> variableTypes;
@@ -154,6 +154,10 @@ public class Checker {
     }
 
     private ExpressionType checkDivideOperation(Operation operation) {
+        if (checkExpression(operation.rhs) != ExpressionType.SCALAR) {
+            operation.setError("Divide operation must have SCALAR as right hand side expression");
+            return ExpressionType.UNDEFINED;
+        }
         return ExpressionType.SCALAR;
     }
 
