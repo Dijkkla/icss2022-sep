@@ -1,14 +1,20 @@
 package nl.han.ica.icss.ast;
 
 import lombok.EqualsAndHashCode;
+import nl.han.ica.icss.ast.types.OperationType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 public abstract class Operation extends Expression {
+    public final OperationType operationType;
     public Expression lhs;
     public Expression rhs;
+
+    protected Operation(OperationType operationType) {
+        this.operationType = operationType;
+    }
 
     @Override
     public List<ASTNode> getChildren() {

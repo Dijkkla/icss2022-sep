@@ -3,11 +3,8 @@ package nl.han.ica.icss.checker;
 import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
-import nl.han.ica.icss.ast.operations.AddOperation;
-import nl.han.ica.icss.ast.operations.DivideOperation;
-import nl.han.ica.icss.ast.operations.MultiplyOperation;
-import nl.han.ica.icss.ast.operations.SubtractOperation;
 import nl.han.ica.icss.ast.types.ExpressionType;
+import nl.han.ica.icss.ast.types.OperationType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +18,12 @@ public class Checker {
             "background-color", List.of(ExpressionType.COLOR),
             "width", List.of(ExpressionType.PIXEL, ExpressionType.PERCENTAGE),
             "height", List.of(ExpressionType.PIXEL, ExpressionType.PERCENTAGE)
+    );
+    private final Map<OperationType, List<ExpressionType>> operationTypes = Map.of(
+            OperationType.ADD, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
+            OperationType.SUBTRACT, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
+            OperationType.MULTIPLY, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
+            OperationType.DIVIDE, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR)
     );
     private IHANLinkedList<HashMap<String, ExpressionType>> variableTypes;
 
@@ -62,7 +65,7 @@ public class Checker {
     private void checkDeclaration(Declaration declaration) {
         if (checkExpression(declaration.expression) != ExpressionType.UNDEFINED
                 && !declarationTypes.get(declaration.property.name).contains(checkExpression(declaration.expression))) {
-            declaration.setError("Property \"" + declaration.property.name + "\" may not have a value of type: " + checkExpression(declaration.expression));
+            declaration.setError("Property \"" + declaration.property.name + "\" may only use " + declarationTypes.get(declaration.property.name));
         }
     }
 
@@ -108,26 +111,20 @@ public class Checker {
         return ExpressionType.UNDEFINED;
     }
 
-    private ExpressionType checkLiteral(Literal literal) {
-        return literal.expressionType;
-    }
-
     private ExpressionType checkOperation(Operation operation) {
-        List<ExpressionType> illegalExpressionTypes = List.of(ExpressionType.COLOR, ExpressionType.BOOL);
         if (operation.getChildren().removeIf(child ->
-                illegalExpressionTypes.contains(checkExpression((Expression) child))
+                checkExpression(((Expression) child)) != ExpressionType.UNDEFINED
+                        && !operationTypes.get(operation.operationType).contains(((Expression) child).expressionType)
         )) {
-            operation.setError("Operations may not use any of " + illegalExpressionTypes);
+            operation.setError(operation.operationType + " operation may only use " + operationTypes.get(operation.operationType));
             return ExpressionType.UNDEFINED;
         }
         if (checkExpression(operation.lhs) == ExpressionType.UNDEFINED || checkExpression(operation.rhs) == ExpressionType.UNDEFINED) {
             return ExpressionType.UNDEFINED;
         }
-        return switch (operation) {
-            case MultiplyOperation ignored -> checkMultiplyOrDivideOperation(operation);
-//            case DivideOperation ignored -> checkMultiplyOrDivideOperation(operation);
-            case AddOperation ignored -> checkAddOrSubtractOperation(operation);
-            case SubtractOperation ignored -> checkAddOrSubtractOperation(operation);
+        return switch (operation.operationType) {
+            case MULTIPLY -> checkMultiplyOrDivideOperation(operation);
+            case ADD, SUBTRACT -> checkAddOrSubtractOperation(operation);
             default -> {
                 operation.setError("Unknown operation");
                 yield ExpressionType.UNDEFINED;

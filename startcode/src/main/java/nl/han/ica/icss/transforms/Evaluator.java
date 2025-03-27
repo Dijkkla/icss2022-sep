@@ -7,9 +7,6 @@ import nl.han.ica.icss.ast.literals.BoolLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
 import nl.han.ica.icss.ast.literals.ScalarLiteral;
-import nl.han.ica.icss.ast.operations.AddOperation;
-import nl.han.ica.icss.ast.operations.MultiplyOperation;
-import nl.han.ica.icss.ast.operations.SubtractOperation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -117,10 +114,11 @@ public class Evaluator implements Transform {
         int[] values = operation.getChildren().stream()
                 .mapToInt(expression -> evaluateExpression((Expression) expression))
                 .toArray();
-        return switch (operation) {
-            case MultiplyOperation ignored -> evaluateMultiplyOperation(values[0], values[1]);
-            case AddOperation ignored -> evaluateAddOperation(values[0], values[1]);
-            case SubtractOperation ignored -> evaluateSubtractOperation(values[0], values[1]);
+        return switch (operation.operationType) {
+            case MULTIPLY -> evaluateMultiplyOperation(values[0], values[1]);
+            case DIVIDE -> evaluateDivideOperation(values[0], values[1]);
+            case ADD -> evaluateAddOperation(values[0], values[1]);
+            case SUBTRACT -> evaluateSubtractOperation(values[0], values[1]);
             default -> throw new IllegalStateException("Unexpected value: " + operation);
         };
     }
@@ -141,6 +139,10 @@ public class Evaluator implements Transform {
 
     private int evaluateMultiplyOperation(int lhs, int rhs) {
         return lhs * rhs;
+    }
+
+    private int evaluateDivideOperation(int lhs, int rhs) {
+        return lhs / rhs;
     }
 
     private int evaluateAddOperation(int lhs, int rhs) {
