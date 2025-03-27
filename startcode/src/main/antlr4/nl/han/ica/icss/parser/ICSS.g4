@@ -64,24 +64,24 @@ stylerule: selector block;
 selector: CLASS_IDENT#classSelector | ID_IDENT#idSelector | LOWER_IDENT#tagSelector;
 block: OPEN_BRACE (declaration | variableAssignment | ifClause)* CLOSE_BRACE;
 
-declaration: propertyName COLON (operation | colorLiteral) SEMICOLON;
+declaration: propertyName COLON operation SEMICOLON;
 propertyName: LOWER_IDENT;
-numericLiteral: PIXELSIZE#pixelLiteral | PERCENTAGE#percentageLiteral | SCALAR#scalarLiteral;
-colorLiteral: COLOR;
+literal: COLOR#colorLiteral | PIXELSIZE#pixelLiteral | PERCENTAGE#percentageLiteral | SCALAR#scalarLiteral | (TRUE | FALSE)#boolLiteral;
 
-variableAssignment: variableReference ASSIGNMENT_OPERATOR (operation | boolLiteral | colorLiteral) SEMICOLON;
+variableAssignment: variableReference ASSIGNMENT_OPERATOR operation SEMICOLON;
 variableReference: CAPITAL_IDENT;
-boolLiteral: TRUE | FALSE;
 
 operation
     : BRACKET_OPEN operation BRACKET_CLOSE#rootOperation
+//    | EXCLAM operation#notOperation
+//    | operation (AND | OR) operation#booleanOperation
 //    | operation (EQUALS | NOT_EQUALS | GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#compareOperation
     | operation (MUL | DIV) operation#multiplyOrDivideOperation
     | operation (PLUS | MIN) operation#addOrSubtractOperation
-    | (numericLiteral | variableReference)#terminalOperation
+    | (variableReference | literal)#terminalOperation
     ;
 
-ifClause: IF BOX_BRACKET_OPEN (variableReference | boolLiteral) BOX_BRACKET_CLOSE
+ifClause: IF BOX_BRACKET_OPEN operation BOX_BRACKET_CLOSE
                 block
                 elseClause?;
 elseClause: ELSE (ifClause | block);
