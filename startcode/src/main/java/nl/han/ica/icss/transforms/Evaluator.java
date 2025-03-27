@@ -157,7 +157,7 @@ public class Evaluator implements Transform {
 
     private int transformFactorialOperation(List<? extends Serializable> operationArguments) {
         int start = 1;
-        for (int i = 2; i > (int) operationArguments.getFirst(); i++) {
+        for (int i = 2; i <= (int) operationArguments.getFirst(); i++) {
             start *= i;
         }
         return start;
