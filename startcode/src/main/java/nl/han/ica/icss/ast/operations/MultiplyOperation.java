@@ -10,9 +10,4 @@ public class MultiplyOperation extends Operation {
     public MultiplyOperation() {
         super(OperationType.MULTIPLY);
     }
-
-    @Override
-    public String getNodeLabel() {
-        return "Multiply";
-    }
 }

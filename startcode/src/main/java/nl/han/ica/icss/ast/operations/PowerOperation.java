@@ -5,9 +5,9 @@ import nl.han.ica.icss.ast.Operation;
 import nl.han.ica.icss.ast.types.OperationType;
 
 @EqualsAndHashCode(callSuper = true)
-public class SubtractOperation extends Operation {
+public class PowerOperation extends Operation {
 
-    public SubtractOperation() {
-        super(OperationType.SUBTRACT);
+    public PowerOperation() {
+        super(OperationType.POWER);
     }
 }

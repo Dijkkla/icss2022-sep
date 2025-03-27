@@ -23,7 +23,8 @@ public class Checker {
             OperationType.ADD, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
             OperationType.SUBTRACT, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
             OperationType.MULTIPLY, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
-            OperationType.DIVIDE, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR)
+            OperationType.DIVIDE, List.of(ExpressionType.SCALAR),
+            OperationType.POWER, List.of(ExpressionType.SCALAR)
     );
     private IHANLinkedList<HashMap<String, ExpressionType>> variableTypes;
 
@@ -123,8 +124,11 @@ public class Checker {
             return ExpressionType.UNDEFINED;
         }
         return switch (operation.operationType) {
-            case MULTIPLY -> checkMultiplyOrDivideOperation(operation);
-            case ADD, SUBTRACT -> checkAddOrSubtractOperation(operation);
+            case POWER -> checkPowerOperation(operation);
+            case MULTIPLY -> checkMultiplyOperation(operation);
+            case DIVIDE -> checkDivideOperation(operation);
+            case ADD -> checkAddOperation(operation);
+            case SUBTRACT -> checkSubtractOperation(operation);
             default -> {
                 operation.setError("Unknown operation");
                 yield ExpressionType.UNDEFINED;
@@ -132,18 +136,34 @@ public class Checker {
         };
     }
 
-    private ExpressionType checkMultiplyOrDivideOperation(Operation operation) {
+    private ExpressionType checkPowerOperation(Operation operation) {
+        return ExpressionType.SCALAR;
+    }
+
+    private ExpressionType checkMultiplyOperation(Operation operation) {
         if (checkExpression(operation.lhs) != ExpressionType.SCALAR && checkExpression(operation.rhs) != ExpressionType.SCALAR) {
-            operation.setError("Multiply and divide operations must have at least 1 SCALAR");
+            operation.setError("Multiply operation must have at least 1 SCALAR");
             return ExpressionType.UNDEFINED;
         }
         return checkExpression(operation.lhs) != ExpressionType.SCALAR ? checkExpression(operation.lhs)
                 : checkExpression(operation.rhs);
     }
 
-    private ExpressionType checkAddOrSubtractOperation(Operation operation) {
+    private ExpressionType checkDivideOperation(Operation operation) {
+        return ExpressionType.SCALAR;
+    }
+
+    private ExpressionType checkAddOperation(Operation operation) {
         if (checkExpression(operation.lhs) != checkExpression(operation.rhs)) {
-            operation.setError("Add and subtract operations must have matching literals");
+            operation.setError("Add operation must have matching literals");
+            return ExpressionType.UNDEFINED;
+        }
+        return checkExpression(operation.lhs);
+    }
+
+    private ExpressionType checkSubtractOperation(Operation operation) {
+        if (checkExpression(operation.lhs) != checkExpression(operation.rhs)) {
+            operation.setError("Subtract operation must have matching literals");
             return ExpressionType.UNDEFINED;
         }
         return checkExpression(operation.lhs);

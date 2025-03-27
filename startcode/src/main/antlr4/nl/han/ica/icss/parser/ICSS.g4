@@ -76,6 +76,7 @@ operation
 //    | EXCLAM operation#notOperation
 //    | operation (AND | OR) operation#booleanOperation
 //    | operation (EQUALS | NOT_EQUALS | GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#compareOperation
+    | operation POW operation#powerOperation
     | operation (MUL | DIV) operation#multiplyOrDivideOperation
     | operation (PLUS | MIN) operation#addOrSubtractOperation
     | (variableReference | literal)#terminalOperation

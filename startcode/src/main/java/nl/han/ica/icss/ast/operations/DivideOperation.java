@@ -10,9 +10,4 @@ public class DivideOperation extends Operation {
     public DivideOperation() {
         super(OperationType.DIVIDE);
     }
-
-    @Override
-    public String getNodeLabel() {
-        return "Divide";
-    }
 }

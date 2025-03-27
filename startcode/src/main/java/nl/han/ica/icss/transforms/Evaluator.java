@@ -115,11 +115,11 @@ public class Evaluator implements Transform {
                 .mapToInt(expression -> evaluateExpression((Expression) expression))
                 .toArray();
         return switch (operation.operationType) {
+            case POWER -> evaluatePowerOperation(values[0], values[1]);
             case MULTIPLY -> evaluateMultiplyOperation(values[0], values[1]);
             case DIVIDE -> evaluateDivideOperation(values[0], values[1]);
             case ADD -> evaluateAddOperation(values[0], values[1]);
             case SUBTRACT -> evaluateSubtractOperation(values[0], values[1]);
-            default -> throw new IllegalStateException("Unexpected value: " + operation);
         };
     }
 
@@ -135,6 +135,10 @@ public class Evaluator implements Transform {
                 default -> throw new IllegalStateException("Unexpected value: " + literal.expressionType);
             };
         }
+    }
+
+    private int evaluatePowerOperation(int lhs, int rhs) {
+        return (int) Math.pow(lhs, rhs);
     }
 
     private int evaluateMultiplyOperation(int lhs, int rhs) {
