@@ -25,7 +25,7 @@ public class Pipeline implements ANTLRErrorListener {
     private boolean parsed = false;
     private boolean checked = false;
     private boolean transformed = false;
-    private List<String> errors;
+    private final List<String> errors;
 
     public Pipeline() {
         errors = new ArrayList<>();

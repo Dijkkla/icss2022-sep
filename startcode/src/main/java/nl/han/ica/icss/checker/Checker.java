@@ -15,14 +15,13 @@ import java.util.Map;
 
 public class Checker {
 
-    private IHANLinkedList<HashMap<String, ExpressionType>> variableTypes;
-
     private final Map<String, List<ExpressionType>> declarationTypes = Map.of(
             "color", List.of(ExpressionType.COLOR),
             "background-color", List.of(ExpressionType.COLOR),
             "width", List.of(ExpressionType.PIXEL, ExpressionType.PERCENTAGE),
             "height", List.of(ExpressionType.PIXEL, ExpressionType.PERCENTAGE)
     );
+    private IHANLinkedList<HashMap<String, ExpressionType>> variableTypes;
 
     public void check(AST ast) {
         variableTypes = new HANLinkedList<>();
