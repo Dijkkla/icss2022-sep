@@ -4,6 +4,7 @@ import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
 import nl.han.ica.icss.ast.operations.AddOperation;
+import nl.han.ica.icss.ast.operations.DivideOperation;
 import nl.han.ica.icss.ast.operations.MultiplyOperation;
 import nl.han.ica.icss.ast.operations.SubtractOperation;
 import nl.han.ica.icss.ast.types.ExpressionType;
@@ -123,16 +124,20 @@ public class Checker {
             return ExpressionType.UNDEFINED;
         }
         return switch (operation) {
-            case MultiplyOperation ignored -> checkMultiplyOperation(operation);
+            case MultiplyOperation ignored -> checkMultiplyOrDivideOperation(operation);
+//            case DivideOperation ignored -> checkMultiplyOrDivideOperation(operation);
             case AddOperation ignored -> checkAddOrSubtractOperation(operation);
             case SubtractOperation ignored -> checkAddOrSubtractOperation(operation);
-            default -> ExpressionType.UNDEFINED;
+            default -> {
+                operation.setError("Unknown operation");
+                yield ExpressionType.UNDEFINED;
+            }
         };
     }
 
-    private ExpressionType checkMultiplyOperation(Operation operation) {
+    private ExpressionType checkMultiplyOrDivideOperation(Operation operation) {
         if (checkExpression(operation.lhs) != ExpressionType.SCALAR && checkExpression(operation.rhs) != ExpressionType.SCALAR) {
-            operation.setError("Multiply operations must have at least 1 SCALAR");
+            operation.setError("Multiply and divide operations must have at least 1 SCALAR");
             return ExpressionType.UNDEFINED;
         }
         return checkExpression(operation.lhs) != ExpressionType.SCALAR ? checkExpression(operation.lhs)

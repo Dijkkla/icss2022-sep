@@ -28,20 +28,30 @@ CLASS_IDENT: '.' [a-z0-9\-]+;
 LOWER_IDENT: [a-z] [a-z0-9\-]*;
 CAPITAL_IDENT: [A-Z] [A-Za-z0-9_]*;
 
-//All whitespace is skipped
-WS: [ \t\r\n]+ -> skip;
-
 //
 OPEN_BRACE: '{';
 CLOSE_BRACE: '}';
 SEMICOLON: ';';
 COLON: ':';
+ASSIGNMENT_OPERATOR: ':=';
 PLUS: '+';
 MIN: '-';
 MUL: '*';
-ASSIGNMENT_OPERATOR: ':=';
+DIV: '/';
+POW: '^';
+BRACKET_OPEN: '(';
+BRACKET_CLOSE: ')';
 
+EQUALS: '==';
+NOT_EQUALS: '!=' | '<>';
+GREATER_THAN: '>';
+SMALLER_THAN: '<';
+GREATER_OR_EQUAL_THAN: '>=';
+SMALLER_OR_EQUAL_THAN: '<=';
+EXCLAM: '!';
 
+//All whitespace is skipped
+WS: [ \t\r\n]+ -> skip;
 
 
 //--- PARSER: ---
@@ -61,7 +71,8 @@ variableReference: CAPITAL_IDENT;
 boolLiteral: TRUE | FALSE;
 
 operation
-    : operation MUL operation#multiplyOperation
+    : /* operation (EQUALS | NOT_EQUALS | GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#compareOperation
+    | */ operation (MUL | DIV) operation#multiplyOrDivideOperation
     | operation (PLUS | MIN) operation#addOrSubtractOperation
     | (numericLiteral | variableReference)#terminalOperation
     ;
