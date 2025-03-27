@@ -48,6 +48,9 @@ GREATER_THAN: '>';
 SMALLER_THAN: '<';
 GREATER_OR_EQUAL_THAN: '>=';
 SMALLER_OR_EQUAL_THAN: '<=';
+
+AND: '&&';
+OR: '||';
 EXCLAM: '!';
 
 //All whitespace is skipped
@@ -71,8 +74,9 @@ variableReference: CAPITAL_IDENT;
 boolLiteral: TRUE | FALSE;
 
 operation
-    : /* operation (EQUALS | NOT_EQUALS | GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#compareOperation
-    | */ operation (MUL | DIV) operation#multiplyOrDivideOperation
+    : BRACKET_OPEN operation BRACKET_CLOSE#rootOperation
+//    | operation (EQUALS | NOT_EQUALS | GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#compareOperation
+    | operation (MUL | DIV) operation#multiplyOrDivideOperation
     | operation (PLUS | MIN) operation#addOrSubtractOperation
     | (numericLiteral | variableReference)#terminalOperation
     ;
