@@ -60,8 +60,8 @@ WS: [ \t\r\n]+ -> skip;
 //--- PARSER: ---
 stylesheet: (stylerule | variableAssignment)* EOF;
 
-stylerule: selector block;
-selector: CLASS_IDENT#classSelector | ID_IDENT#idSelector | LOWER_IDENT#tagSelector;
+stylerule: selector+ block;
+selector: CLASS_IDENT#classSelector | (ID_IDENT | COLOR)#idSelector | LOWER_IDENT#tagSelector;
 block: OPEN_BRACE (declaration | variableAssignment | ifClause)* CLOSE_BRACE;
 
 declaration: propertyName COLON operation SEMICOLON;

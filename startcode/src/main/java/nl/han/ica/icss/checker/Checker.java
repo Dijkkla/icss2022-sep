@@ -64,9 +64,12 @@ public class Checker {
     }
 
     private void checkDeclaration(Declaration declaration) {
-        if (checkExpression(declaration.expression) != ExpressionType.UNDEFINED
-                && !declarationTypes.get(declaration.property.name).contains(checkExpression(declaration.expression))) {
-            declaration.setError("Property \"" + declaration.property.name + "\" may only use " + declarationTypes.get(declaration.property.name));
+        List<ExpressionType> expressionTypes = declarationTypes.get(declaration.property.name);
+        if (expressionTypes == null) {
+            declaration.setError("Property \"" + declaration.property.name + "\" is not defined");
+        } else if (checkExpression(declaration.expression) != ExpressionType.UNDEFINED
+                && !expressionTypes.contains(checkExpression(declaration.expression))) {
+            declaration.setError("Property \"" + declaration.property.name + "\" may only use " + expressionTypes);
         }
     }
 
@@ -113,11 +116,12 @@ public class Checker {
     }
 
     private ExpressionType checkOperation(Operation operation) {
+        List<ExpressionType> expressionTypes = operationTypes.get(operation.operationType);
         if (operation.getChildren().removeIf(child ->
                 checkExpression(((Expression) child)) != ExpressionType.UNDEFINED
-                        && !operationTypes.get(operation.operationType).contains(((Expression) child).expressionType)
+                        && !expressionTypes.contains(((Expression) child).expressionType)
         )) {
-            operation.setError(operation.operationType + " operation may only use " + operationTypes.get(operation.operationType));
+            operation.setError(operation.operationType + " operation may only use " + expressionTypes);
             return ExpressionType.UNDEFINED;
         }
         if (checkExpression(operation.lhs) == ExpressionType.UNDEFINED || checkExpression(operation.rhs) == ExpressionType.UNDEFINED) {
