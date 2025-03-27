@@ -65,9 +65,10 @@ public class Evaluator implements Transform {
     private List<ASTNode> transformIfClause(IfClause ifClause) {
         if (((BoolLiteral) transformExpression(ifClause.conditionalExpression)).value) {
             return transformBlock(ifClause.body);
-        } else {
+        } else if (ifClause.elseClause != null) {
             return transformElseClause(ifClause.elseClause);
         }
+        return List.of();
     }
 
     private List<ASTNode> transformElseClause(ElseClause elseClause) {
