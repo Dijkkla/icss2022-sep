@@ -1,0 +1,42 @@
+LinkColor := #ff0000;
+ParWidth := 500px;
+AdjustColor := TRUE;
+UseLinkColor := FALSE;
+FixedMenuHeight := FALSE;
+
+p {
+	background-color: #ffffff;
+	width: ParWidth;
+	if[AdjustColor] {
+	    color: #124532;
+	    if[UseLinkColor]{
+	        background-color: LinkColor;
+	    } else {
+	        background-color: #000000;
+	    }
+	}
+	height: 20px;
+}
+a {
+	color: LinkColor;
+}
+
+#menu {
+	width: ParWidth + 20px;
+	if [FixedMenuHeight] {
+	    height: 100px;
+	}
+	if [!TRUE || 7 != 3 + 2 ^ (3 - 1)] {
+	    background-color: #FFFFFF;
+	} else if [!(1 > 2) && 7 == 3 + 4] {
+	    background-color: #777777;
+	} else {
+	    background-color: #000000;
+	}
+}
+
+.menu {
+	color: #000000;
+    background-color: LinkColor;
+
+}
