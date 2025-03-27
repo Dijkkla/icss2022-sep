@@ -103,27 +103,39 @@ public class Evaluator implements Transform {
     }
 
     private Literal transformOperation(Operation operation) {
-        int[] values = operation.getChildren().stream()
-                .map(expression -> transformExpression((Expression) expression))
-                .mapToInt(literal -> switch (literal.expressionType) {
-                    case PERCENTAGE -> ((PercentageLiteral) literal).value;
-                    case PIXEL -> ((PixelLiteral) literal).value;
-                    case SCALAR -> ((ScalarLiteral) literal).value;
-                    default -> throw new IllegalStateException("Unexpected value: " + literal.expressionType);
-                })
-                .toArray();
-        int returnValue = switch (operation) {
-            case MultiplyOperation ignored -> evaluateMultiplyOperation(values[0], values[1]);
-            case AddOperation ignored -> evaluateAddOperation(values[0], values[1]);
-            case SubtractOperation ignored -> evaluateSubtractOperation(values[0], values[1]);
-            default -> throw new IllegalStateException("Unexpected value: " + operation);
-        };
+        int returnValue = evaluateOperation(operation);
         return switch (operation.expressionType) {
             case PERCENTAGE -> new PercentageLiteral(returnValue);
             case PIXEL -> new PixelLiteral(returnValue);
             case SCALAR -> new ScalarLiteral(returnValue);
             default -> throw new IllegalStateException("Unexpected value: " + operation.expressionType);
         };
+    }
+
+    private int evaluateOperation(Operation operation) {
+        int[] values = operation.getChildren().stream()
+                .mapToInt(expression -> evaluateExpression((Expression) expression))
+                .toArray();
+        return switch (operation) {
+            case MultiplyOperation ignored -> evaluateMultiplyOperation(values[0], values[1]);
+            case AddOperation ignored -> evaluateAddOperation(values[0], values[1]);
+            case SubtractOperation ignored -> evaluateSubtractOperation(values[0], values[1]);
+            default -> throw new IllegalStateException("Unexpected value: " + operation);
+        };
+    }
+
+    private int evaluateExpression(Expression expression) {
+        if (expression instanceof Operation operation) {
+            return evaluateOperation(operation);
+        } else {
+            Literal literal = transformExpression(expression);
+            return switch (literal.expressionType) {
+                case PERCENTAGE -> ((PercentageLiteral) literal).value;
+                case PIXEL -> ((PixelLiteral) literal).value;
+                case SCALAR -> ((ScalarLiteral) literal).value;
+                default -> throw new IllegalStateException("Unexpected value: " + literal.expressionType);
+            };
+        }
     }
 
     private int evaluateMultiplyOperation(int lhs, int rhs) {
