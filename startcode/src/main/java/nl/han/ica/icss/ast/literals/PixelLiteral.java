@@ -12,10 +12,12 @@ public class PixelLiteral extends Literal {
         this.value = value;
         expressionType = ExpressionType.PIXEL;
     }
+
     public PixelLiteral(String text) {
         this.value = Integer.parseInt(text.substring(0, text.length() - 2));
         expressionType = ExpressionType.PIXEL;
     }
+
     @Override
     public String getNodeLabel() {
         return "Pixel literal (" + value + ")";

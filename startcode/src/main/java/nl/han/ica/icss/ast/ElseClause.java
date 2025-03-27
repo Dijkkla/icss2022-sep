@@ -1,15 +1,17 @@
 package nl.han.ica.icss.ast;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class ElseClause extends ASTNode{
+public class ElseClause extends ASTNode {
 
-    public ArrayList<ASTNode> body = new ArrayList<>();
+    public List<ASTNode> body = new ArrayList<>();
 
-    public ElseClause() { }
+    public ElseClause() {
+    }
 
-    public ElseClause(ArrayList<ASTNode> body) {
+    public ElseClause(List<ASTNode> body) {
 
         this.body = body;
     }
@@ -18,9 +20,10 @@ public class ElseClause extends ASTNode{
     public String getNodeLabel() {
         return "Else_Clause";
     }
+
     @Override
-    public ArrayList<ASTNode> getChildren() {
-        ArrayList<ASTNode> children = new ArrayList<>();
+    public List<ASTNode> getChildren() {
+        List<ASTNode> children = new ArrayList<>();
         children.addAll(body);
 
         return children;
@@ -33,6 +36,7 @@ public class ElseClause extends ASTNode{
 
         return this;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -46,7 +50,6 @@ public class ElseClause extends ASTNode{
     public int hashCode() {
         return Objects.hash(body);
     }
-
 
 
 }

@@ -41,7 +41,7 @@ public class Evaluator implements Transform {
         transformBlock(stylerule.body);
     }
 
-    private ArrayList<ASTNode> transformBlock(ArrayList<ASTNode> nodes) {
+    private List<ASTNode> transformBlock(List<ASTNode> nodes) {
         variableValues.addFirst(new HashMap<>());
         List<ASTNode> newNodes = new ArrayList<>();
         nodes.forEach(node -> {
@@ -62,7 +62,7 @@ public class Evaluator implements Transform {
         declaration.expression = transformExpression(declaration.expression);
     }
 
-    private ArrayList<ASTNode> transformIfClause(IfClause ifClause) {
+    private List<ASTNode> transformIfClause(IfClause ifClause) {
         if (((BoolLiteral) transformExpression(ifClause.conditionalExpression)).value) {
             return transformBlock(ifClause.body);
         } else {
@@ -70,7 +70,7 @@ public class Evaluator implements Transform {
         }
     }
 
-    private ArrayList<ASTNode> transformElseClause(ElseClause elseClause) {
+    private List<ASTNode> transformElseClause(ElseClause elseClause) {
         return transformBlock(elseClause.body);
     }
 

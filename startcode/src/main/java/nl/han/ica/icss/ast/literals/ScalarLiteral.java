@@ -12,10 +12,12 @@ public class ScalarLiteral extends Literal {
         this.value = value;
         expressionType = ExpressionType.SCALAR;
     }
+
     public ScalarLiteral(String text) {
         this.value = Integer.parseInt(text);
         expressionType = ExpressionType.SCALAR;
     }
+
     @Override
     public String getNodeLabel() {
         return "Scalar literal (" + value + ")";

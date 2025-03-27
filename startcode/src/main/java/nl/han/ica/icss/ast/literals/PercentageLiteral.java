@@ -12,10 +12,12 @@ public class PercentageLiteral extends Literal {
         this.value = value;
         expressionType = ExpressionType.PERCENTAGE;
     }
+
     public PercentageLiteral(String text) {
         this.value = Integer.parseInt(text.substring(0, text.length() - 1));
         expressionType = ExpressionType.PERCENTAGE;
     }
+
     @Override
     public String getNodeLabel() {
         return "Percentage literal (" + value + ")";

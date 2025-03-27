@@ -12,10 +12,12 @@ public class BoolLiteral extends Literal {
         this.value = value;
         expressionType = ExpressionType.BOOL;
     }
+
     public BoolLiteral(String text) {
         this.value = text.equals("TRUE");
         expressionType = ExpressionType.BOOL;
     }
+
     @Override
     public String getNodeLabel() {
         String textValue = value ? "TRUE" : "FALSE";
