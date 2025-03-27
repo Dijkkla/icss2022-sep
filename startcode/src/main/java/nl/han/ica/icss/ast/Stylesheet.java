@@ -1,15 +1,15 @@
 package nl.han.ica.icss.ast;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A stylesheet is the root node of the AST, it consists of one or more statements
  */
+@EqualsAndHashCode(callSuper = true)
 public class Stylesheet extends ASTNode {
-
-
     public List<ASTNode> body;
 
     public Stylesheet() {
@@ -40,20 +40,5 @@ public class Stylesheet extends ASTNode {
     public ASTNode removeChild(ASTNode child) {
         body.remove(child);
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Stylesheet that = (Stylesheet) o;
-        return Objects.equals(body, that.body);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(body);
     }
 }

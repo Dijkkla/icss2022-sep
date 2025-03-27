@@ -1,9 +1,9 @@
 package nl.han.ica.icss.ast.selectors;
 
+import lombok.EqualsAndHashCode;
 import nl.han.ica.icss.ast.Selector;
 
-import java.util.Objects;
-
+@EqualsAndHashCode(callSuper = true)
 public class TagSelector extends Selector {
     public String tag;
 
@@ -11,26 +11,13 @@ public class TagSelector extends Selector {
         this.tag = tag;
     }
 
+    @Override
     public String getNodeLabel() {
         return "TagSelector " + tag;
     }
 
+    @Override
     public String toString() {
         return tag;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        TagSelector that = (TagSelector) o;
-        return Objects.equals(tag, that.tag);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(tag);
     }
 }

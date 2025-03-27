@@ -1,9 +1,11 @@
 package nl.han.ica.icss.ast;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+@EqualsAndHashCode(callSuper = true)
 public class ElseClause extends ASTNode {
 
     public List<ASTNode> body = new ArrayList<>();
@@ -23,10 +25,7 @@ public class ElseClause extends ASTNode {
 
     @Override
     public List<ASTNode> getChildren() {
-        List<ASTNode> children = new ArrayList<>();
-        children.addAll(body);
-
-        return children;
+        return new ArrayList<>(body);
     }
 
     @Override
@@ -36,20 +35,4 @@ public class ElseClause extends ASTNode {
 
         return this;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        ElseClause ElseClause = (ElseClause) o;
-        return Objects.equals(body, ElseClause.body);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(body);
-    }
-
-
 }

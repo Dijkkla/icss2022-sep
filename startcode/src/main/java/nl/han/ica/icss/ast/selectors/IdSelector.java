@@ -1,9 +1,9 @@
 package nl.han.ica.icss.ast.selectors;
 
+import lombok.EqualsAndHashCode;
 import nl.han.ica.icss.ast.Selector;
 
-import java.util.Objects;
-
+@EqualsAndHashCode(callSuper = true)
 public class IdSelector extends Selector {
     public String id;
 
@@ -11,25 +11,13 @@ public class IdSelector extends Selector {
         this.id = id;
     }
 
+    @Override
     public String getNodeLabel() {
         return "IdSelector " + id;
     }
 
+    @Override
     public String toString() {
         return id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        IdSelector that = (IdSelector) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }

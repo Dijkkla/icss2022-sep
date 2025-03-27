@@ -1,20 +1,20 @@
 package nl.han.ica.icss.ast;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 public abstract class Operation extends Expression {
-
     public Expression lhs;
     public Expression rhs;
 
     @Override
     public List<ASTNode> getChildren() {
         List<ASTNode> children = new ArrayList<>();
-        if (lhs != null)
-            children.add(lhs);
-        if (rhs != null)
-            children.add(rhs);
+        if (lhs != null) children.add(lhs);
+        if (rhs != null) children.add(rhs);
         return children;
     }
 

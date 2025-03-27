@@ -1,12 +1,14 @@
 package nl.han.ica.icss.ast;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /*
  * A Declaration defines a style property. Declarations are things like "width: 100px"
  */
+@EqualsAndHashCode(callSuper = true)
 public class Declaration extends ASTNode {
     public PropertyName property;
     public Expression expression;
@@ -44,20 +46,5 @@ public class Declaration extends ASTNode {
             expression = (Expression) child;
         }
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Declaration that = (Declaration) o;
-        return Objects.equals(property, that.property) &&
-                Objects.equals(expression, that.expression);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(property, expression);
     }
 }

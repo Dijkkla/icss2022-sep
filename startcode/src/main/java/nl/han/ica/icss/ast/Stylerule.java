@@ -1,11 +1,12 @@
 package nl.han.ica.icss.ast;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+@EqualsAndHashCode(callSuper = true)
 public class Stylerule extends ASTNode {
-
     public List<Selector> selectors = new ArrayList<>();
     public List<ASTNode> body = new ArrayList<>();
 
@@ -41,20 +42,5 @@ public class Stylerule extends ASTNode {
             body.add(child);
 
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        Stylerule stylerule = (Stylerule) o;
-        return Objects.equals(selectors, stylerule.selectors) &&
-                Objects.equals(body, stylerule.body);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(selectors, body);
     }
 }

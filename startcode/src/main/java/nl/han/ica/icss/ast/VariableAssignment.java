@@ -1,14 +1,15 @@
 package nl.han.ica.icss.ast;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
- * An assignment binds a expression to an identifier.
+ * An assignment binds an expression to an identifier.
  */
+@EqualsAndHashCode(callSuper = true)
 public class VariableAssignment extends ASTNode {
-
     public VariableReference name;
     public Expression expression;
 
@@ -37,20 +38,5 @@ public class VariableAssignment extends ASTNode {
         if (expression != null)
             children.add(expression);
         return children;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        VariableAssignment that = (VariableAssignment) o;
-        return Objects.equals(name, that.name) &&
-                Objects.equals(expression, that.expression);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, expression);
     }
 }

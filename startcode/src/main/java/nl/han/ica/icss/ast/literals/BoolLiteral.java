@@ -1,10 +1,10 @@
 package nl.han.ica.icss.ast.literals;
 
+import lombok.EqualsAndHashCode;
 import nl.han.ica.icss.ast.Literal;
 import nl.han.ica.icss.ast.types.ExpressionType;
 
-import java.util.Objects;
-
+@EqualsAndHashCode(callSuper = true)
 public class BoolLiteral extends Literal {
     public boolean value;
 
@@ -22,19 +22,5 @@ public class BoolLiteral extends Literal {
     public String getNodeLabel() {
         String textValue = value ? "TRUE" : "FALSE";
         return "Bool Literal (" + textValue + ")";
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        BoolLiteral that = (BoolLiteral) o;
-        return value == that.value;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
     }
 }

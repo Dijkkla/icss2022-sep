@@ -1,7 +1,9 @@
 package nl.han.ica.icss.ast;
 
-public class PropertyName extends ASTNode {
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
+public class PropertyName extends ASTNode {
     public String name;
 
     public PropertyName() {

@@ -1,11 +1,15 @@
 package nl.han.ica.icss.ast;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import nl.han.ica.icss.checker.SemanticError;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ASTNode {
+@Getter
+@EqualsAndHashCode
+public abstract class ASTNode {
 
     private SemanticError error = null;
 
@@ -13,9 +17,7 @@ public class ASTNode {
      This method is used in the GUI to create an appropriate label
      in the tree visualisation.
       */
-    public String getNodeLabel() {
-        return "ASTNode";
-    }
+    public abstract String getNodeLabel();
 
     /*
      Different AST nodes use different attributes to store their children.
@@ -38,10 +40,6 @@ public class ASTNode {
      */
     public ASTNode removeChild(ASTNode child) {
         return this;
-    }
-
-    public SemanticError getError() {
-        return this.error;
     }
 
     public void setError(String description) {
@@ -67,22 +65,5 @@ public class ASTNode {
             child.toString(builder);
         }
         builder.append("]");
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof ASTNode))
-            return false;
-        //Compare all children
-        List<ASTNode> thisChildren = this.getChildren();
-        List<ASTNode> otherChildren = ((ASTNode) o).getChildren();
-        if (otherChildren.size() != thisChildren.size())
-            return false;
-        for (int i = 0; i < thisChildren.size(); i++) {
-            if (!thisChildren.get(i).equals(otherChildren.get(i))) {
-                return false;
-            }
-        }
-        return true;
     }
 }

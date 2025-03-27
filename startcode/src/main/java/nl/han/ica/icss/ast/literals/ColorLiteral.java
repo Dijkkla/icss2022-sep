@@ -1,10 +1,10 @@
 package nl.han.ica.icss.ast.literals;
 
+import lombok.EqualsAndHashCode;
 import nl.han.ica.icss.ast.Literal;
 import nl.han.ica.icss.ast.types.ExpressionType;
 
-import java.util.Objects;
-
+@EqualsAndHashCode(callSuper = true)
 public class ColorLiteral extends Literal {
     public String value;
 
@@ -16,20 +16,5 @@ public class ColorLiteral extends Literal {
     @Override
     public String getNodeLabel() {
         return "Color literal (" + value + ")";
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ColorLiteral that = (ColorLiteral) o;
-        return Objects.equals(value, that.value);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(value);
     }
 }

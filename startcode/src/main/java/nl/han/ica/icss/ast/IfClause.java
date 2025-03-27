@@ -1,12 +1,12 @@
 package nl.han.ica.icss.ast;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
+@EqualsAndHashCode(callSuper = true)
 public class IfClause extends ASTNode {
-
-
     public Expression conditionalExpression;
     public List<ASTNode> body = new ArrayList<>();
     public ElseClause elseClause;
@@ -35,50 +35,17 @@ public class IfClause extends ASTNode {
         List<ASTNode> children = new ArrayList<>();
         children.add(conditionalExpression);
         children.addAll(body);
-        if (elseClause != null)
-            children.add(elseClause);
+        if (elseClause != null) children.add(elseClause);
 
         return children;
     }
 
     @Override
     public ASTNode addChild(ASTNode child) {
-        if (child instanceof Expression)
-            conditionalExpression = (Expression) child;
-        else if (child instanceof ElseClause)
-            elseClause = (ElseClause) child;
-        else
-            body.add(child);
+        if (child instanceof Expression) conditionalExpression = (Expression) child;
+        else if (child instanceof ElseClause) elseClause = (ElseClause) child;
+        else body.add(child);
 
         return this;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-        IfClause ifClause = (IfClause) o;
-        if (this.elseClause == null)
-            return Objects.equals(conditionalExpression, ifClause.getConditionalExpression()) &&
-                    Objects.equals(body, ifClause.body);
-        else
-            return Objects.equals(conditionalExpression, ifClause.getConditionalExpression()) &&
-                    Objects.equals(body, ifClause.body) &&
-                    Objects.equals(elseClause, ifClause.elseClause);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(conditionalExpression, body, elseClause);
-    }
-
-    public Expression getConditionalExpression() {
-        return conditionalExpression;
-    }
-
-    public ElseClause getElseClause() {
-        return elseClause;
     }
 }
