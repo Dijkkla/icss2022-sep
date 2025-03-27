@@ -67,7 +67,8 @@ public class Checker {
     }
 
     private void checkIfClause(IfClause ifClause) {
-        if (checkExpression(ifClause.conditionalExpression) != ExpressionType.BOOL) {
+        if (checkExpression(ifClause.conditionalExpression) != ExpressionType.UNDEFINED
+                && checkExpression(ifClause.conditionalExpression) != ExpressionType.BOOL) {
             ifClause.setError("If clause conditional expression must be BOOL");
         }
         checkBlock(ifClause.body);
@@ -87,12 +88,13 @@ public class Checker {
     }
 
     private ExpressionType checkExpression(Expression expression) {
-        expression.setExpressionType(switch (expression) {
-            case Operation operation -> checkOperation(operation);
-            case Literal literal -> checkLiteral(literal);
-            case VariableReference variableReference -> checkVariableReference(variableReference);
-            default -> ExpressionType.UNDEFINED;
-        });
+        switch (expression) {
+            case Operation operation -> expression.setExpressionType(checkOperation(operation));
+            case VariableReference variableReference ->
+                    expression.setExpressionType(checkVariableReference(variableReference));
+            default -> {
+            }
+        }
         return expression.expressionType;
     }
 
@@ -111,9 +113,11 @@ public class Checker {
     }
 
     private ExpressionType checkOperation(Operation operation) {
-        if (checkExpression(operation.lhs) == ExpressionType.COLOR || checkExpression(operation.rhs) == ExpressionType.COLOR
-                || checkExpression(operation.lhs) == ExpressionType.BOOL || checkExpression(operation.rhs) == ExpressionType.BOOL) {
-            operation.setError("Operations may not use BOOL or COLOR");
+        List<ExpressionType> illegalExpressionTypes = List.of(ExpressionType.COLOR, ExpressionType.BOOL);
+        if (operation.getChildren().removeIf(child ->
+                illegalExpressionTypes.contains(checkExpression((Expression) child))
+        )) {
+            operation.setError("Operations may not use any of " + illegalExpressionTypes);
             return ExpressionType.UNDEFINED;
         }
         if (checkExpression(operation.lhs) == ExpressionType.UNDEFINED || checkExpression(operation.rhs) == ExpressionType.UNDEFINED) {
