@@ -243,7 +243,7 @@ public class Checker {
             operation.setError(operation.operationType + " operation must have SCALAR as right hand side expression");
             return ExpressionType.UNDEFINED;
         }
-        return ExpressionType.SCALAR;
+        return checkExpression(operation.lhs);
     }
 
     private ExpressionType checkAddOperation(Operation operation) {

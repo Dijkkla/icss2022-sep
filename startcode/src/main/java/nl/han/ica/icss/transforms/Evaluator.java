@@ -3,10 +3,7 @@ package nl.han.ica.icss.transforms;
 import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
-import nl.han.ica.icss.ast.literals.BoolLiteral;
-import nl.han.ica.icss.ast.literals.PercentageLiteral;
-import nl.han.ica.icss.ast.literals.PixelLiteral;
-import nl.han.ica.icss.ast.literals.ScalarLiteral;
+import nl.han.ica.icss.ast.literals.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,62 +98,87 @@ public class Evaluator implements Transform {
     }
 
     private Literal transformOperation(Operation operation) {
-        int returnValue = evaluateOperation(operation);
+        List<Object> operationArguments = List.of(operation.getChildren().stream()
+                .map(child -> transformExpression((Expression) child))
+                .map(literal -> switch (literal.expressionType) {
+                    case BOOL -> ((BoolLiteral) literal).value;
+                    case COLOR -> ((ColorLiteral) literal).value;
+                    case PERCENTAGE -> ((PercentageLiteral) literal).value;
+                    case PIXEL -> ((PixelLiteral) literal).value;
+                    case SCALAR -> ((ScalarLiteral) literal).value;
+                    default -> throw new IllegalStateException("Unexpected value: " + literal.expressionType);
+                })
+                .toList());
+        Object result = switch (operation.operationType) {
+            case ADD -> transformAddOperation(operationArguments);
+            case SUBTRACT -> transformSubtractOperation(operationArguments);
+            case MULTIPLY -> transformMultipyOperation(operationArguments);
+            case DIVIDE -> transformDivideOperation(operationArguments);
+            case POWER -> transformPowerOperation(operationArguments);
+            case FACTORIAL -> transformFactorialOperation(operationArguments);
+            case NOT -> transformNotOperation(operationArguments);
+            case EQUALS -> transformEqualsOperation(operationArguments);
+            case GREATER_THAN -> transformGreaterThanOperation(operationArguments);
+            case AND -> transformAndOperation(operationArguments);
+            case OR -> transformOrOperation(operationArguments);
+            default -> throw new IllegalStateException("Unexpected value: " + operation.operationType);
+        };
         return switch (operation.expressionType) {
-            case PERCENTAGE -> new PercentageLiteral(returnValue);
-            case PIXEL -> new PixelLiteral(returnValue);
-            case SCALAR -> new ScalarLiteral(returnValue);
+            case BOOL -> new BoolLiteral((Boolean) result);
+            case COLOR -> new ColorLiteral((String) result);
+            case PERCENTAGE -> new PercentageLiteral((Integer) result);
+            case PIXEL -> new PixelLiteral((Integer) result);
+            case SCALAR -> new ScalarLiteral((Integer) result);
             default -> throw new IllegalStateException("Unexpected value: " + operation.expressionType);
         };
     }
 
-    private int evaluateOperation(Operation operation) {
-        int[] values = operation.getChildren().stream()
-                .mapToInt(expression -> evaluateExpression((Expression) expression))
-                .toArray();
-        return switch (operation.operationType) {
-            case POWER -> evaluatePowerOperation(values[0], values[1]);
-            case MULTIPLY -> evaluateMultiplyOperation(values[0], values[1]);
-            case DIVIDE -> evaluateDivideOperation(values[0], values[1]);
-            case ADD -> evaluateAddOperation(values[0], values[1]);
-            case SUBTRACT -> evaluateSubtractOperation(values[0], values[1]);
-            default -> throw new IllegalStateException("Unexpected value: " + operation.operationType);
-        };
+    private boolean transformOrOperation(List<Object> operationArguments) {
+        return (boolean) operationArguments.get(0) || (boolean) operationArguments.get(1);
     }
 
-    private int evaluateExpression(Expression expression) {
-        if (expression instanceof Operation operation) {
-            return evaluateOperation(operation);
-        } else {
-            Literal literal = transformExpression(expression);
-            return switch (literal.expressionType) {
-                case PERCENTAGE -> ((PercentageLiteral) literal).value;
-                case PIXEL -> ((PixelLiteral) literal).value;
-                case SCALAR -> ((ScalarLiteral) literal).value;
-                default -> throw new IllegalStateException("Unexpected value: " + literal.expressionType);
-            };
+    private boolean transformAndOperation(List<Object> operationArguments) {
+        return (boolean) operationArguments.get(0) && (boolean) operationArguments.get(1);
+    }
+
+    private boolean transformGreaterThanOperation(List<Object> operationArguments) {
+        return (int) operationArguments.get(0) > (int) operationArguments.get(1);
+    }
+
+    private boolean transformEqualsOperation(List<Object> operationArguments) {
+        if (operationArguments.stream().map(Object::getClass).distinct().count() > 1) return false;
+        return !(operationArguments.stream().distinct().count() > 1);
+    }
+
+    private boolean transformNotOperation(List<Object> operationArguments) {
+        return !((boolean) operationArguments.getFirst());
+    }
+
+    private int transformFactorialOperation(List<Object> operationArguments) {
+        int start = 1;
+        for (int i = 2; i > (int) operationArguments.getFirst(); i++) {
+            start *= i;
         }
+        return start;
     }
 
-    private int evaluatePowerOperation(int lhs, int rhs) {
-        return (int) Math.pow(lhs, rhs);
+    private int transformPowerOperation(List<Object> operationArguments) {
+        return (int) Math.pow((int) operationArguments.get(0), (int) operationArguments.get(1));
     }
 
-    private int evaluateMultiplyOperation(int lhs, int rhs) {
-        return lhs * rhs;
+    private int transformDivideOperation(List<Object> operationArguments) {
+        return (int) operationArguments.get(0) / (int) operationArguments.get(1);
     }
 
-    private int evaluateDivideOperation(int lhs, int rhs) {
-        return lhs / rhs;
+    private int transformMultipyOperation(List<Object> operationArguments) {
+        return (int) operationArguments.get(0) * (int) operationArguments.get(1);
     }
 
-    private int evaluateAddOperation(int lhs, int rhs) {
-        return lhs + rhs;
+    private int transformSubtractOperation(List<Object> operationArguments) {
+        return (int) operationArguments.get(0) - (int) operationArguments.get(1);
     }
 
-    private int evaluateSubtractOperation(int lhs, int rhs) {
-        return lhs - rhs;
+    private int transformAddOperation(List<Object> operationArguments) {
+        return (int) operationArguments.get(0) + (int) operationArguments.get(1);
     }
-
-
 }
