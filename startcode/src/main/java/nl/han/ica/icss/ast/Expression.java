@@ -8,5 +8,4 @@ import nl.han.ica.icss.ast.types.ExpressionType;
 @EqualsAndHashCode(callSuper = true)
 public abstract class Expression extends ASTNode {
     public ExpressionType expressionType = ExpressionType.UNDEFINED;
-
 }

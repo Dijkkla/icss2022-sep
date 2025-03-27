@@ -72,13 +72,14 @@ variableAssignment: variableReference ASSIGNMENT_OPERATOR operation SEMICOLON;
 variableReference: CAPITAL_IDENT;
 
 operation
-    : BRACKET_OPEN operation BRACKET_CLOSE#rootOperation
-//    | EXCLAM operation#notOperation
-//    | operation (AND | OR) operation#booleanOperation
-//    | operation (EQUALS | NOT_EQUALS | GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#compareOperation
+    : BRACKET_OPEN operation BRACKET_CLOSE#bracketOperation
+    | operation EXCLAM#factorialOperation
+    | EXCLAM operation#notOperation
     | operation POW operation#powerOperation
     | operation (MUL | DIV) operation#multiplyOrDivideOperation
     | operation (PLUS | MIN) operation#addOrSubtractOperation
+    | operation (EQUALS | NOT_EQUALS | GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#compareOperation
+    | operation (AND | OR) operation#booleanOperation
     | (variableReference | literal)#terminalOperation
     ;
 

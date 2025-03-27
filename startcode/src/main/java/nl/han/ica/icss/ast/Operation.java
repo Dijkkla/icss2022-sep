@@ -33,6 +33,7 @@ public abstract class Operation extends Expression {
         }
         return this;
     }
+
     @Override
     public String getNodeLabel() {
         return operationType.toString();

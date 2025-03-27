@@ -326,4 +326,8 @@ public class Fixtures {
 
 		return new AST(stylesheet);
 	}
+
+	public static AST uncheckedLevel4() {
+        return null;
+    }
 }
