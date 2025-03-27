@@ -21,11 +21,11 @@ import java.util.List;
 
 public class Pipeline implements ANTLRErrorListener {
 
+    private final List<String> errors;
     private AST ast;
     private boolean parsed = false;
     private boolean checked = false;
     private boolean transformed = false;
-    private final List<String> errors;
 
     public Pipeline() {
         errors = new ArrayList<>();
