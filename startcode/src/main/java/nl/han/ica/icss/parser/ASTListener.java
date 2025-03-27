@@ -96,6 +96,30 @@ public class ASTListener extends ICSSBaseListener {
     }
 
     @Override
+    public void enterFactorialOperation(ICSSParser.FactorialOperationContext ctx) {
+        Operation operation = new FactorialOperation();
+        currentContainer.push(operation);
+    }
+
+    @Override
+    public void exitFactorialOperation(ICSSParser.FactorialOperationContext ctx) {
+        Operation operation = (Operation) currentContainer.pop();
+        currentContainer.peek().addChild(operation);
+    }
+
+    @Override
+    public void enterNotOperation(ICSSParser.NotOperationContext ctx) {
+        Operation operation = new NotOperation();
+        currentContainer.push(operation);
+    }
+
+    @Override
+    public void exitNotOperation(ICSSParser.NotOperationContext ctx) {
+        Operation operation = (Operation) currentContainer.pop();
+        currentContainer.peek().addChild(operation);
+    }
+
+    @Override
     public void enterPowerOperation(ICSSParser.PowerOperationContext ctx) {
         Operation operation = new PowerOperation();
         currentContainer.push(operation);
@@ -127,6 +151,36 @@ public class ASTListener extends ICSSBaseListener {
 
     @Override
     public void exitAddOrSubtractOperation(ICSSParser.AddOrSubtractOperationContext ctx) {
+        Operation operation = (Operation) currentContainer.pop();
+        currentContainer.peek().addChild(operation);
+    }
+
+    @Override
+    public void enterCompareOperation(ICSSParser.CompareOperationContext ctx) {
+        Operation operation = ctx.EQUALS() != null || ctx.NOT_EQUALS() != null ? new EqualsOperation() : new GreaterThanOperation();
+        currentContainer.push(operation);
+    }
+
+    @Override
+    public void exitCompareOperation(ICSSParser.CompareOperationContext ctx) {
+        Operation operation = ctx.EQUALS() != null ? (Operation) currentContainer.pop()
+                : ctx.NOT_EQUALS() != null ? (Operation) (new NotOperation()).addChild(currentContainer.pop())
+                : ctx.GREATER_THAN() != null ? (Operation) currentContainer.pop()
+                : ctx.SMALLER_THAN() != null ? (Operation) ((Operation) currentContainer.pop()).switchSides()
+                : ctx.GREATER_OR_EQUAL_THAN() != null ? (Operation) (new NotOperation()).addChild(((Operation) currentContainer.pop()).switchSides())
+                : ctx.SMALLER_OR_EQUAL_THAN() != null ? (Operation) (new NotOperation()).addChild(currentContainer.pop())
+                : null;
+        currentContainer.peek().addChild(operation);
+    }
+
+    @Override
+    public void enterBooleanOperation(ICSSParser.BooleanOperationContext ctx) {
+        Operation operation = ctx.AND() != null ? new AndOperation() : new OrOperation();
+        currentContainer.push(operation);
+    }
+
+    @Override
+    public void exitBooleanOperation(ICSSParser.BooleanOperationContext ctx) {
         Operation operation = (Operation) currentContainer.pop();
         currentContainer.peek().addChild(operation);
     }

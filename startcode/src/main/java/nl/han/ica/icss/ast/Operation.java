@@ -16,6 +16,13 @@ public abstract class Operation extends Expression {
         this.operationType = operationType;
     }
 
+    public ASTNode switchSides() {
+        Expression tmp = lhs;
+        lhs = rhs;
+        rhs = tmp;
+        return this;
+    }
+
     @Override
     public List<ASTNode> getChildren() {
         List<ASTNode> children = new ArrayList<>();

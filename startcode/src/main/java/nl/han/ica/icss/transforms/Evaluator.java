@@ -120,6 +120,7 @@ public class Evaluator implements Transform {
             case DIVIDE -> evaluateDivideOperation(values[0], values[1]);
             case ADD -> evaluateAddOperation(values[0], values[1]);
             case SUBTRACT -> evaluateSubtractOperation(values[0], values[1]);
+            default -> throw new IllegalStateException("Unexpected value: " + operation.operationType);
         };
     }
 

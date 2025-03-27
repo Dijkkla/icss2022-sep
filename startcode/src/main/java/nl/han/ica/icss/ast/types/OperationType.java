@@ -5,5 +5,11 @@ public enum OperationType {
     SUBTRACT,
     MULTIPLY,
     DIVIDE,
-    POWER
+    POWER,
+    FACTORIAL,
+    NOT,
+    EQUALS,
+    GREATER_THAN,
+    AND,
+    OR
 }
