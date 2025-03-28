@@ -7,10 +7,7 @@ import nl.han.ica.icss.ast.literals.*;
 import nl.han.ica.icss.ast.types.*;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Evaluator implements Transform {
 
@@ -128,11 +125,11 @@ public class Evaluator implements Transform {
             default -> throw new IllegalStateException("Unexpected value: " + operation.operationType);
         };
         return switch (operation.expressionType) {
-            case BOOL -> new BoolLiteral((Boolean) result);
+            case BOOL -> new BoolLiteral((boolean) result);
             case COLOR -> new ColorLiteral((String) result);
-            case PERCENTAGE -> new PercentageLiteral((Integer) result);
-            case PIXEL -> new PixelLiteral((Integer) result);
-            case SCALAR -> new ScalarLiteral((Integer) result);
+            case PERCENTAGE -> new PercentageLiteral((int) result);
+            case PIXEL -> new PixelLiteral((int) result);
+            case SCALAR -> new ScalarLiteral((int) result);
             default -> throw new IllegalStateException("Unexpected value: " + operation.expressionType);
         };
     }
@@ -154,7 +151,7 @@ public class Evaluator implements Transform {
     }
 
     private boolean transformEqualsOperation(ExpressionType lhsType, ExpressionType rhsType, Serializable lhs, Serializable rhs) {
-        return lhsType == rhsType && lhs == rhs;
+        return lhsType == rhsType && Objects.equals(lhs, rhs);
     }
 
     private boolean transformNotOperation(boolean arg) {
