@@ -38,6 +38,7 @@ PLUS: '+';
 MIN: '-';
 MUL: '*';
 DIV: '/';
+REST: '%';
 POW: '^';
 BRACKET_OPEN: '(';
 BRACKET_CLOSE: ')';
@@ -74,12 +75,14 @@ variableReference: CAPITAL_IDENT;
 operation
     : BRACKET_OPEN operation BRACKET_CLOSE#bracketOperation
     | operation EXCLAM#factorialOperation
-    | EXCLAM operation#notOperation
+    | (EXCLAM | PLUS | MIN) operation#prefixOperation
     | operation POW operation#powerOperation
-    | operation (MUL | DIV) operation#multiplyOrDivideOperation
-    | operation (PLUS | MIN) operation#addOrSubtractOperation
-    | operation (EQUALS | NOT_EQUALS | GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#compareOperation
-    | operation (AND | OR) operation#booleanOperation
+    | operation (MUL | DIV | REST) operation#multiplicativeOperation
+    | operation (PLUS | MIN) operation#additiveOperation
+    | operation (GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#relationalOperation
+    | operation (EQUALS | NOT_EQUALS) operation#equalityOperation
+    | operation AND operation#andOperation
+    | operation OR operation#orOperation
     | (variableReference | literal)#terminalOperation
     ;
 

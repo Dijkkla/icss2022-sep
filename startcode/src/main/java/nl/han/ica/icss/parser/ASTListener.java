@@ -108,15 +108,21 @@ public class ASTListener extends ICSSBaseListener {
     }
 
     @Override
-    public void enterNotOperation(ICSSParser.NotOperationContext ctx) {
-        Operation operation = new NotOperation();
-        currentContainer.push(operation);
+    public void enterPrefixOperation(ICSSParser.PrefixOperationContext ctx) {
+        if (ctx.PLUS() == null) {
+            Operation operation = ctx.EXCLAM() != null ? new NotOperation()
+                    : ctx.MIN() != null ? (Operation) new MultiplyOperation().addChild(new ScalarLiteral(-1))
+                    : null;
+            currentContainer.push(operation);
+        }
     }
 
     @Override
-    public void exitNotOperation(ICSSParser.NotOperationContext ctx) {
-        Operation operation = (Operation) currentContainer.pop();
-        currentContainer.peek().addChild(operation);
+    public void exitPrefixOperation(ICSSParser.PrefixOperationContext ctx) {
+        if (ctx.PLUS() == null) {
+            Operation operation = (Operation) currentContainer.pop();
+            currentContainer.peek().addChild(operation);
+        }
     }
 
     @Override
@@ -132,55 +138,86 @@ public class ASTListener extends ICSSBaseListener {
     }
 
     @Override
-    public void enterMultiplyOrDivideOperation(ICSSParser.MultiplyOrDivideOperationContext ctx) {
-        Operation operation = ctx.MUL() != null ? new MultiplyOperation() : new DivideOperation();
+    public void enterMultiplicativeOperation(ICSSParser.MultiplicativeOperationContext ctx) {
+        Operation operation = ctx.MUL() != null ? new MultiplyOperation()
+                : ctx.DIV() != null ? new DivideOperation()
+                : ctx.REST() != null ? new RestOperation()
+                : null;
         currentContainer.push(operation);
     }
 
     @Override
-    public void exitMultiplyOrDivideOperation(ICSSParser.MultiplyOrDivideOperationContext ctx) {
+    public void exitMultiplicativeOperation(ICSSParser.MultiplicativeOperationContext ctx) {
         Operation operation = (Operation) currentContainer.pop();
         currentContainer.peek().addChild(operation);
     }
 
     @Override
-    public void enterAddOrSubtractOperation(ICSSParser.AddOrSubtractOperationContext ctx) {
-        Operation operation = ctx.PLUS() != null ? new AddOperation() : new SubtractOperation();
+    public void enterAdditiveOperation(ICSSParser.AdditiveOperationContext ctx) {
+        Operation operation = ctx.PLUS() != null ? new AddOperation()
+                : ctx.MIN() != null ? new SubtractOperation()
+                : null;
         currentContainer.push(operation);
     }
 
     @Override
-    public void exitAddOrSubtractOperation(ICSSParser.AddOrSubtractOperationContext ctx) {
+    public void exitAdditiveOperation(ICSSParser.AdditiveOperationContext ctx) {
         Operation operation = (Operation) currentContainer.pop();
         currentContainer.peek().addChild(operation);
     }
 
     @Override
-    public void enterCompareOperation(ICSSParser.CompareOperationContext ctx) {
-        Operation operation = ctx.EQUALS() != null || ctx.NOT_EQUALS() != null ? new EqualsOperation() : new GreaterThanOperation();
+    public void enterRelationalOperation(ICSSParser.RelationalOperationContext ctx) {
+        Operation operation = new GreaterThanOperation();
         currentContainer.push(operation);
     }
 
     @Override
-    public void exitCompareOperation(ICSSParser.CompareOperationContext ctx) {
-        Operation operation = ctx.EQUALS() != null ? (Operation) currentContainer.pop()
-                : ctx.NOT_EQUALS() != null ? (Operation) (new NotOperation()).addChild(currentContainer.pop())
-                : ctx.GREATER_THAN() != null ? (Operation) currentContainer.pop()
-                : ctx.SMALLER_THAN() != null ? (Operation) ((Operation) currentContainer.pop()).switchSides()
-                : ctx.GREATER_OR_EQUAL_THAN() != null ? (Operation) (new NotOperation()).addChild(((Operation) currentContainer.pop()).switchSides())
-                : ctx.SMALLER_OR_EQUAL_THAN() != null ? (Operation) (new NotOperation()).addChild(currentContainer.pop())
+    public void exitRelationalOperation(ICSSParser.RelationalOperationContext ctx) {
+        Operation operation = (Operation) currentContainer.pop();
+        operation = ctx.GREATER_THAN() != null ? operation
+                : ctx.SMALLER_THAN() != null ? (operation).switchSides()
+                : ctx.GREATER_OR_EQUAL_THAN() != null ? (Operation) (new NotOperation()).addChild((operation).switchSides())
+                : ctx.SMALLER_OR_EQUAL_THAN() != null ? (Operation) (new NotOperation()).addChild(operation)
                 : null;
         currentContainer.peek().addChild(operation);
     }
 
     @Override
-    public void enterBooleanOperation(ICSSParser.BooleanOperationContext ctx) {
-        Operation operation = ctx.AND() != null ? new AndOperation() : new OrOperation();
+    public void enterEqualityOperation(ICSSParser.EqualityOperationContext ctx) {
+        Operation operation = new EqualsOperation();
         currentContainer.push(operation);
     }
 
     @Override
-    public void exitBooleanOperation(ICSSParser.BooleanOperationContext ctx) {
+    public void exitEqualityOperation(ICSSParser.EqualityOperationContext ctx) {
+        Operation operation = (Operation) currentContainer.pop();
+        operation = ctx.EQUALS() != null ? operation
+                : ctx.NOT_EQUALS() != null ? (Operation) (new NotOperation()).addChild(operation)
+                : null;
+        currentContainer.peek().addChild(operation);
+    }
+
+    @Override
+    public void enterAndOperation(ICSSParser.AndOperationContext ctx) {
+        Operation operation = new AndOperation();
+        currentContainer.push(operation);
+    }
+
+    @Override
+    public void exitAndOperation(ICSSParser.AndOperationContext ctx) {
+        Operation operation = (Operation) currentContainer.pop();
+        currentContainer.peek().addChild(operation);
+    }
+
+    @Override
+    public void enterOrOperation(ICSSParser.OrOperationContext ctx) {
+        Operation operation = new OrOperation();
+        currentContainer.push(operation);
+    }
+
+    @Override
+    public void exitOrOperation(ICSSParser.OrOperationContext ctx) {
         Operation operation = (Operation) currentContainer.pop();
         currentContainer.peek().addChild(operation);
     }

@@ -31,6 +31,7 @@ public class Checker {
                 OperationType.SUBTRACT, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
                 OperationType.MULTIPLY, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
                 OperationType.DIVIDE, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
+                OperationType.REST, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
                 OperationType.POWER, List.of(ExpressionType.SCALAR),
                 OperationType.FACTORIAL, List.of(ExpressionType.SCALAR),
                 OperationType.NOT, List.of(ExpressionType.BOOL),
@@ -158,11 +159,24 @@ public class Checker {
             case GREATER_THAN -> checkGreaterThanOperation(operation);
             case AND -> checkAndOperation(operation);
             case OR -> checkOrOperation(operation);
+            case REST -> checkRestOperation(operation);
             default -> {
                 operation.setError("Unknown operation");
                 yield ExpressionType.UNDEFINED;
             }
         };
+    }
+
+    private ExpressionType checkRestOperation(Operation operation) {
+        if (operation.rhs == null) {
+            operation.setError(operation.operationType + " must have 2 arguments");
+            return ExpressionType.UNDEFINED;
+        }
+        if (checkExpression(operation.lhs) != checkExpression(operation.rhs)) {
+            operation.setError(operation.operationType + " operation must have matching literals");
+            return ExpressionType.UNDEFINED;
+        }
+        return checkExpression(operation.lhs);
     }
 
     private ExpressionType checkOrOperation(Operation operation) {

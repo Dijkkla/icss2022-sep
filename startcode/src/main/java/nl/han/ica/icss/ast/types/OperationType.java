@@ -5,6 +5,7 @@ public enum OperationType {
     SUBTRACT,
     MULTIPLY,
     DIVIDE,
+    REST,
     POWER,
     FACTORIAL,
     NOT,

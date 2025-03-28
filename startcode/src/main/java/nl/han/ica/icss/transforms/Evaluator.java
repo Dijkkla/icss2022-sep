@@ -124,6 +124,7 @@ public class Evaluator implements Transform {
             case GREATER_THAN -> transformGreaterThanOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
             case AND -> transformAndOperation((boolean) operationArguments.get(0), (boolean) operationArguments.get(1));
             case OR -> transformOrOperation((boolean) operationArguments.get(0), (boolean) operationArguments.get(1));
+            case REST -> transformRestOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
             default -> throw new IllegalStateException("Unexpected value: " + operation.operationType);
         };
         return switch (operation.expressionType) {
@@ -134,6 +135,10 @@ public class Evaluator implements Transform {
             case SCALAR -> new ScalarLiteral((Integer) result);
             default -> throw new IllegalStateException("Unexpected value: " + operation.expressionType);
         };
+    }
+
+    private int transformRestOperation(int lhs, int rhs) {
+        return lhs % rhs;
     }
 
     private boolean transformOrOperation(boolean lhs, boolean rhs) {

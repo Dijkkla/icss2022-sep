@@ -16,7 +16,7 @@ public abstract class Operation extends Expression {
         this.operationType = operationType;
     }
 
-    public ASTNode switchSides() {
+    public Operation switchSides() {
         Expression tmp = lhs;
         lhs = rhs;
         rhs = tmp;
