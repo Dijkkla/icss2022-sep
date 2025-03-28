@@ -22,7 +22,7 @@ public class Checker {
 
     private final Map<OperationType, List<ExpressionType>> operationTypes;
 
-    private IHANLinkedList<HashMap<String, ExpressionType>> variableTypes;
+    private IHANLinkedList<Map<String, ExpressionType>> variableTypes;
 
     public Checker() {
         operationTypes = new HashMap<>();
@@ -196,10 +196,6 @@ public class Checker {
     private ExpressionType checkEqualsOperation(Operation operation) {
         if (operation.rhs == null) {
             operation.setError(operation.operationType + " must have 2 arguments");
-            return ExpressionType.UNDEFINED;
-        }
-        if (checkExpression(operation.lhs) != checkExpression(operation.rhs)) {
-            operation.setError(operation.operationType + " operation must have matching literals");
             return ExpressionType.UNDEFINED;
         }
         return ExpressionType.BOOL;

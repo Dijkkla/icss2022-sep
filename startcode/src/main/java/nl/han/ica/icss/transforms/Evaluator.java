@@ -4,15 +4,17 @@ import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
 import nl.han.ica.icss.ast.literals.*;
+import nl.han.ica.icss.ast.types.*;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Evaluator implements Transform {
 
-    private final IHANLinkedList<HashMap<String, Literal>> variableValues = new HANLinkedList<>();
+    private final IHANLinkedList<Map<String, Literal>> variableValues = new HANLinkedList<>();
 
     @Override
     public void apply(AST ast) {
@@ -111,17 +113,17 @@ public class Evaluator implements Transform {
                 })
                 .toList();
         Object result = switch (operation.operationType) {
-            case ADD -> transformAddOperation(operationArguments);
-            case SUBTRACT -> transformSubtractOperation(operationArguments);
-            case MULTIPLY -> transformMultiplyOperation(operationArguments);
-            case DIVIDE -> transformDivideOperation(operationArguments);
-            case POWER -> transformPowerOperation(operationArguments);
-            case FACTORIAL -> transformFactorialOperation(operationArguments);
-            case NOT -> transformNotOperation(operationArguments);
-            case EQUALS -> transformEqualsOperation(operationArguments);
-            case GREATER_THAN -> transformGreaterThanOperation(operationArguments);
-            case AND -> transformAndOperation(operationArguments);
-            case OR -> transformOrOperation(operationArguments);
+            case ADD -> transformAddOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
+            case SUBTRACT -> transformSubtractOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
+            case MULTIPLY -> transformMultiplyOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
+            case DIVIDE -> transformDivideOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
+            case POWER -> transformPowerOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
+            case FACTORIAL -> transformFactorialOperation((int) operationArguments.getFirst());
+            case NOT -> transformNotOperation(((boolean) operationArguments.getFirst()));
+            case EQUALS -> transformEqualsOperation(operation.lhs.expressionType, operation.rhs.expressionType, operationArguments.get(0), operationArguments.get(1));
+            case GREATER_THAN -> transformGreaterThanOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
+            case AND -> transformAndOperation((boolean) operationArguments.get(0), (boolean) operationArguments.get(1));
+            case OR -> transformOrOperation((boolean) operationArguments.get(0), (boolean) operationArguments.get(1));
             default -> throw new IllegalStateException("Unexpected value: " + operation.operationType);
         };
         return switch (operation.expressionType) {
@@ -134,52 +136,51 @@ public class Evaluator implements Transform {
         };
     }
 
-    private boolean transformOrOperation(List<? extends Serializable> operationArguments) {
-        return (boolean) operationArguments.get(0) || (boolean) operationArguments.get(1);
+    private boolean transformOrOperation(boolean lhs, boolean rhs) {
+        return lhs || rhs;
     }
 
-    private boolean transformAndOperation(List<? extends Serializable> operationArguments) {
-        return (boolean) operationArguments.get(0) && (boolean) operationArguments.get(1);
+    private boolean transformAndOperation(boolean lhs, boolean rhs) {
+        return lhs && rhs;
     }
 
-    private boolean transformGreaterThanOperation(List<? extends Serializable> operationArguments) {
-        return (int) operationArguments.get(0) > (int) operationArguments.get(1);
+    private boolean transformGreaterThanOperation(int lhs, int rhs) {
+        return lhs > rhs;
     }
 
-    private boolean transformEqualsOperation(List<? extends Serializable> operationArguments) {
-        if (operationArguments.stream().map(Object::getClass).distinct().count() > 1) return false;
-        return !(operationArguments.stream().distinct().count() > 1);
+    private boolean transformEqualsOperation(ExpressionType lhsType, ExpressionType rhsType, Serializable lhs, Serializable rhs) {
+        return lhsType == rhsType && lhs == rhs;
     }
 
-    private boolean transformNotOperation(List<? extends Serializable> operationArguments) {
-        return !((boolean) operationArguments.getFirst());
+    private boolean transformNotOperation(boolean arg) {
+        return !arg;
     }
 
-    private int transformFactorialOperation(List<? extends Serializable> operationArguments) {
-        int start = 1;
-        for (int i = 2; i <= (int) operationArguments.getFirst(); i++) {
-            start *= i;
+    private int transformFactorialOperation(int arg) {
+        int x = 1;
+        for (int i = 2; i <= arg; i++) {
+            x *= i;
         }
-        return start;
+        return x;
     }
 
-    private int transformPowerOperation(List<? extends Serializable> operationArguments) {
-        return (int) Math.pow((int) operationArguments.get(0), (int) operationArguments.get(1));
+    private int transformPowerOperation(int lhs, int rhs) {
+        return (int) Math.pow(lhs, rhs);
     }
 
-    private int transformDivideOperation(List<? extends Serializable> operationArguments) {
-        return (int) operationArguments.get(0) / (int) operationArguments.get(1);
+    private int transformDivideOperation(int lhs, int rhs) {
+        return lhs / rhs;
     }
 
-    private int transformMultiplyOperation(List<? extends Serializable> operationArguments) {
-        return (int) operationArguments.get(0) * (int) operationArguments.get(1);
+    private int transformMultiplyOperation(int lhs, int rhs) {
+        return lhs * rhs;
     }
 
-    private int transformSubtractOperation(List<? extends Serializable> operationArguments) {
-        return (int) operationArguments.get(0) - (int) operationArguments.get(1);
+    private int transformSubtractOperation(int lhs, int rhs) {
+        return lhs - rhs;
     }
 
-    private int transformAddOperation(List<? extends Serializable> operationArguments) {
-        return (int) operationArguments.get(0) + (int) operationArguments.get(1);
+    private int transformAddOperation(int lhs, int rhs) {
+        return lhs + rhs;
     }
 }
