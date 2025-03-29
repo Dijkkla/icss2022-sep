@@ -28,6 +28,9 @@ CLASS_IDENT: '.' [a-z0-9\-]+;
 LOWER_IDENT: [a-z] [a-z0-9\-]*;
 CAPITAL_IDENT: [A-Z] [A-Za-z0-9_]*;
 
+//All whitespace is skipped
+WS: [ \t\r\n]+ -> skip;
+
 //
 OPEN_BRACE: '{';
 CLOSE_BRACE: '}';
@@ -40,26 +43,24 @@ MUL: '*';
 DIV: '/';
 REST: '%';
 POW: '^';
+EXCLAM: '!';
 BRACKET_OPEN: '(';
 BRACKET_CLOSE: ')';
 
-EQUALS: '==';
-NOT_EQUALS: '!=' | '<>';
 GREATER_THAN: '>';
 SMALLER_THAN: '<';
 GREATER_OR_EQUAL_THAN: '>=';
 SMALLER_OR_EQUAL_THAN: '<=';
+GREATER_OR_SMALLER_THAN: '<>';
+EQUALS: '=';
 
 AND: '&&';
 OR: '||';
-EXCLAM: '!';
 
-//All whitespace is skipped
-WS: [ \t\r\n]+ -> skip;
 
 
 //--- PARSER: ---
-stylesheet: (stylerule | variableAssignment)* EOF;
+stylesheet: ((stylerule | variableAssignment)* | (variableAssignment | operation SEMICOLON)*) EOF;
 
 stylerule: selector+ block;
 selector: CLASS_IDENT#classSelector | (ID_IDENT | COLOR)#idSelector | LOWER_IDENT#tagSelector;
@@ -80,7 +81,7 @@ operation
     | operation (MUL | DIV | REST) operation#multiplicativeOperation
     | operation (PLUS | MIN) operation#additiveOperation
     | operation (GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#relationalOperation
-    | operation (EQUALS | NOT_EQUALS) operation#equalityOperation
+    | operation ((EQUALS | EXCLAM) EQUALS | GREATER_OR_SMALLER_THAN) operation#equalityOperation
     | operation AND operation#andOperation
     | operation OR operation#orOperation
     | (variableReference | literal)#terminalOperation

@@ -20,14 +20,17 @@ public class Evaluator implements Transform {
 
     private void transformStylesheet(Stylesheet stylesheet) {
         variableValues.addFirst(new HashMap<>());
+        List<ASTNode> newNodes = new ArrayList<>();
         stylesheet.body.forEach(node -> {
             switch (node) {
                 case VariableAssignment variableAssignment -> transformVariableAssignment(variableAssignment);
                 case Stylerule stylerule -> transformStylerule(stylerule);
+                case Expression expression -> newNodes.add(transformExpression(expression));
                 default -> throw new IllegalStateException("Unexpected value: " + node);
             }
         });
-        stylesheet.body.removeIf(node -> (node instanceof VariableAssignment));
+        stylesheet.body.removeIf(node -> node instanceof VariableAssignment || node instanceof Expression);
+        stylesheet.body.addAll(newNodes);
         variableValues.clear();
     }
 

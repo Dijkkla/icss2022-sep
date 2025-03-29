@@ -192,9 +192,8 @@ public class ASTListener extends ICSSBaseListener {
     @Override
     public void exitEqualityOperation(ICSSParser.EqualityOperationContext ctx) {
         Operation operation = (Operation) currentContainer.pop();
-        operation = ctx.EQUALS() != null ? operation
-                : ctx.NOT_EQUALS() != null ? (Operation) (new NotOperation()).addChild(operation)
-                : null;
+        operation = ctx.EQUALS().size() == 2 ? operation
+                : (Operation) (new NotOperation()).addChild(operation);
         currentContainer.peek().addChild(operation);
     }
 

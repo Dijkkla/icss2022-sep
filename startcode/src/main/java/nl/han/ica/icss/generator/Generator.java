@@ -1,10 +1,7 @@
 package nl.han.ica.icss.generator;
 
 
-import nl.han.ica.icss.ast.AST;
-import nl.han.ica.icss.ast.Declaration;
-import nl.han.ica.icss.ast.Stylerule;
-import nl.han.ica.icss.ast.Stylesheet;
+import nl.han.ica.icss.ast.*;
 import nl.han.ica.icss.ast.literals.ColorLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
@@ -19,7 +16,15 @@ public class Generator {
     }
 
     private void generateStylesheet(Stylesheet stylesheet) {
-        stylesheet.body.forEach(stylerule -> generateStylerule((Stylerule) stylerule));
+        if (stylesheet.body.stream().anyMatch(node -> node instanceof Stylerule)) {
+            stylesheet.body.forEach(stylerule -> generateStylerule((Stylerule) stylerule));
+        } else {
+            stylesheet.body.forEach(literal -> generateLiteral((Literal) literal));
+        }
+    }
+
+    private void generateLiteral(Literal literal) {
+        stringBuilder.append(literal.toString()).append("\n");
     }
 
     private void generateStylerule(Stylerule stylerule) {
