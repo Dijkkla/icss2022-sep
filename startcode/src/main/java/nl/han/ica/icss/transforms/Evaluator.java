@@ -4,7 +4,7 @@ import nl.han.ica.datastructures.HANLinkedList;
 import nl.han.ica.datastructures.IHANLinkedList;
 import nl.han.ica.icss.ast.*;
 import nl.han.ica.icss.ast.literals.*;
-import nl.han.ica.icss.ast.types.*;
+import nl.han.ica.icss.ast.types.ExpressionType;
 
 import java.io.Serializable;
 import java.util.*;
@@ -114,14 +114,18 @@ public class Evaluator implements Transform {
                 .toList();
         Object result = switch (operation.operationType) {
             case ADD -> transformAddOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
-            case SUBTRACT -> transformSubtractOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
-            case MULTIPLY -> transformMultiplyOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
+            case SUBTRACT ->
+                    transformSubtractOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
+            case MULTIPLY ->
+                    transformMultiplyOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
             case DIVIDE -> transformDivideOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
             case POWER -> transformPowerOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
             case FACTORIAL -> transformFactorialOperation((int) operationArguments.getFirst());
             case NOT -> transformNotOperation(((boolean) operationArguments.getFirst()));
-            case EQUALS -> transformEqualsOperation(operation.lhs.expressionType, operation.rhs.expressionType, operationArguments.get(0), operationArguments.get(1));
-            case GREATER_THAN -> transformGreaterThanOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
+            case EQUALS ->
+                    transformEqualsOperation(operation.lhs.expressionType, operation.rhs.expressionType, operationArguments.get(0), operationArguments.get(1));
+            case GREATER_THAN ->
+                    transformGreaterThanOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
             case AND -> transformAndOperation((boolean) operationArguments.get(0), (boolean) operationArguments.get(1));
             case OR -> transformOrOperation((boolean) operationArguments.get(0), (boolean) operationArguments.get(1));
             case REST -> transformRestOperation((int) operationArguments.get(0), (int) operationArguments.get(1));

@@ -225,20 +225,20 @@ public class Checker {
     }
 
     private boolean checkOperationHas2Arguments(Operation operation) {
-        if (operation.rhs == null) {
+        if (operation.rhs != null) {
+            return true;
+        } else {
             operation.setError(operation.operationType + " must have 2 arguments");
             return false;
-        } else {
-            return true;
         }
     }
 
     private boolean checkOperationHasMatchingLiterals(Operation operation) {
-        if (checkExpression(operation.lhs) != checkExpression(operation.rhs)) {
+        if (checkExpression(operation.lhs) == checkExpression(operation.rhs)) {
+            return true;
+        } else {
             operation.setError(operation.operationType + " operation must have matching literals");
             return false;
-        } else {
-            return true;
         }
     }
 }
