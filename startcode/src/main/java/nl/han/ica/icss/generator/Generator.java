@@ -18,8 +18,10 @@ public class Generator {
     private void generateStylesheet(Stylesheet stylesheet) {
         if (stylesheet.body.stream().anyMatch(node -> node instanceof Stylerule)) {
             stylesheet.body.forEach(stylerule -> generateStylerule((Stylerule) stylerule));
-        } else {
+        } else if (stylesheet.body.stream().anyMatch(node -> node instanceof Literal)) {
             stylesheet.body.forEach(literal -> generateLiteral((Literal) literal));
+        } else if (!stylesheet.body.isEmpty()) {
+            throw new IllegalStateException("AST was not properly transformed, making code generation impossible");
         }
     }
 
