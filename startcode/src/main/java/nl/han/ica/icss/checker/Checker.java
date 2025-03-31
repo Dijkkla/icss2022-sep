@@ -57,7 +57,6 @@ public class Checker {
             switch (node) {
                 case VariableAssignment variableAssignment -> checkVariableAssignment(variableAssignment);
                 case Stylerule stylerule -> checkStylerule(stylerule);
-                case Expression expression -> checkExpression(expression);
                 default -> throw new IllegalStateException("Unexpected value: " + node);
             }
         });

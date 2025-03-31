@@ -62,7 +62,7 @@ OR: '||';
 
 
 //--- PARSER: ---
-stylesheet: ((stylerule | variableAssignment)* | (variableAssignment | operation SEMICOLON)*) EOF;
+stylesheet: (stylerule | variableAssignment)* EOF;
 
 stylerule: selector+ block;
 selector: CLASS_IDENT#classSelector | (ID_IDENT | COLOR)#idSelector | LOWER_IDENT#tagSelector;
