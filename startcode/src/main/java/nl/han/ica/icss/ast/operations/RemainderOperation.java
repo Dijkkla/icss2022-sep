@@ -5,9 +5,9 @@ import nl.han.ica.icss.ast.Operation;
 import nl.han.ica.icss.ast.types.OperationType;
 
 @EqualsAndHashCode(callSuper = true)
-public class RestOperation extends Operation {
+public class RemainderOperation extends Operation {
 
-    public RestOperation() {
+    public RemainderOperation() {
         super(OperationType.REMAINDER);
     }
 }

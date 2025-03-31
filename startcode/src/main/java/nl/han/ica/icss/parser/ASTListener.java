@@ -141,7 +141,7 @@ public class ASTListener extends ICSSBaseListener {
     public void enterMultiplicativeOperation(ICSSParser.MultiplicativeOperationContext ctx) {
         Operation operation = ctx.MUL() != null ? new MultiplyOperation()
                 : ctx.DIV() != null ? new DivideOperation()
-                : ctx.REST() != null ? new RestOperation()
+                : ctx.REMAINDER() != null ? new RemainderOperation()
                 : null;
         currentContainer.push(operation);
     }
