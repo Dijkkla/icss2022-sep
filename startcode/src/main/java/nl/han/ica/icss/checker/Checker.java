@@ -192,23 +192,30 @@ public class Checker {
     }
 
     private ExpressionType checkRestOperation(Operation operation) {
-        return checkOperationHas2Arguments(operation) && checkOperationHasMatchingLiterals(operation) ? checkExpression(operation.lhs) : ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHave2Arguments(operation)) return ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHaveMatchingLiterals(operation)) return ExpressionType.UNDEFINED;
+        return checkExpression(operation.lhs);
     }
 
     private ExpressionType checkOrOperation(Operation operation) {
-        return checkOperationHas2Arguments(operation) ? ExpressionType.BOOL : ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHave2Arguments(operation)) return ExpressionType.UNDEFINED;
+        return ExpressionType.BOOL;
     }
 
     private ExpressionType checkAndOperation(Operation operation) {
-        return checkOperationHas2Arguments(operation) ? ExpressionType.BOOL : ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHave2Arguments(operation)) return ExpressionType.UNDEFINED;
+        return ExpressionType.BOOL;
     }
 
     private ExpressionType checkGreaterThanOperation(Operation operation) {
-        return checkOperationHas2Arguments(operation) && checkOperationHasMatchingLiterals(operation) ? ExpressionType.BOOL : ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHave2Arguments(operation)) return ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHaveMatchingLiterals(operation)) return ExpressionType.UNDEFINED;
+        return ExpressionType.BOOL;
     }
 
     private ExpressionType checkEqualsOperation(Operation operation) {
-        return checkOperationHas2Arguments(operation) ? ExpressionType.BOOL : ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHave2Arguments(operation)) return ExpressionType.UNDEFINED;
+        return ExpressionType.BOOL;
     }
 
     private ExpressionType checkNotOperation() {
@@ -220,11 +227,12 @@ public class Checker {
     }
 
     private ExpressionType checkPowerOperation(Operation operation) {
-        return checkOperationHas2Arguments(operation) ? ExpressionType.SCALAR : ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHave2Arguments(operation)) return ExpressionType.UNDEFINED;
+        return ExpressionType.SCALAR;
     }
 
     private ExpressionType checkMultiplyOperation(Operation operation) {
-        if (!checkOperationHas2Arguments(operation)) return ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHave2Arguments(operation)) return ExpressionType.UNDEFINED;
         if (checkExpression(operation.lhs) != ExpressionType.SCALAR && checkExpression(operation.rhs) != ExpressionType.SCALAR) {
             operation.setError(operation.operationType + " operation must have at least 1 SCALAR");
             return ExpressionType.UNDEFINED;
@@ -234,7 +242,7 @@ public class Checker {
     }
 
     private ExpressionType checkDivideOperation(Operation operation) {
-        if (!checkOperationHas2Arguments(operation)) return ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHave2Arguments(operation)) return ExpressionType.UNDEFINED;
         if (checkExpression(operation.rhs) != ExpressionType.SCALAR) {
             operation.setError(operation.operationType + " operation must have SCALAR as right hand side expression");
             return ExpressionType.UNDEFINED;
@@ -243,27 +251,31 @@ public class Checker {
     }
 
     private ExpressionType checkAddOperation(Operation operation) {
-        return checkOperationHas2Arguments(operation) && checkOperationHasMatchingLiterals(operation) ? checkExpression(operation.lhs) : ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHave2Arguments(operation)) return ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHaveMatchingLiterals(operation)) return ExpressionType.UNDEFINED;
+        return checkExpression(operation.lhs);
     }
 
     private ExpressionType checkSubtractOperation(Operation operation) {
-        return checkOperationHas2Arguments(operation) && checkOperationHasMatchingLiterals(operation) ? checkExpression(operation.lhs) : ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHave2Arguments(operation)) return ExpressionType.UNDEFINED;
+        if (checkOperationDoesNotHaveMatchingLiterals(operation)) return ExpressionType.UNDEFINED;
+        return checkExpression(operation.lhs);
     }
 
-    private boolean checkOperationHas2Arguments(Operation operation) {
-        if (operation.rhs != null) {
+    private boolean checkOperationDoesNotHave2Arguments(Operation operation) {
+        if (operation.rhs == null) {
+            operation.setError(operation.operationType + " must have 2 arguments");
             return true;
         } else {
-            operation.setError(operation.operationType + " must have 2 arguments");
             return false;
         }
     }
 
-    private boolean checkOperationHasMatchingLiterals(Operation operation) {
-        if (checkExpression(operation.lhs) == checkExpression(operation.rhs)) {
+    private boolean checkOperationDoesNotHaveMatchingLiterals(Operation operation) {
+        if (checkExpression(operation.lhs) != checkExpression(operation.rhs)) {
+            operation.setError(operation.operationType + " operation must have matching literals");
             return true;
         } else {
-            operation.setError(operation.operationType + " operation must have matching literals");
             return false;
         }
     }
