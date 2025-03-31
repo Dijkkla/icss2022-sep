@@ -74,7 +74,13 @@ public class Evaluator implements Transform {
 
     private void transformVariableAssignment(VariableAssignment variableAssignment) {
         boolean noPreexistingVariable = true;
-        Literal newVariableValue = transformExpression(variableAssignment.expression);
+        Literal newVariableValue;
+        if (variableAssignment.expression instanceof VariableAssignment nestedVariableAssignment) {
+            transformVariableAssignment(nestedVariableAssignment);
+            newVariableValue = transformVariableReference(nestedVariableAssignment.name);
+        } else {
+            newVariableValue = transformExpression((Expression) variableAssignment.expression);
+        }
         for (int scope = 0; scope < variableValues.getSize(); scope++) {
             Literal variableValue = variableValues.get(scope).get(variableAssignment.name.name);
             if (variableValue != null) {

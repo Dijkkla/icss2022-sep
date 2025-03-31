@@ -108,7 +108,13 @@ public class Checker {
 
     private void checkVariableAssignment(VariableAssignment variableAssignment) {
         boolean noPreexistingVariable = true;
-        ExpressionType newVariableType = checkExpression(variableAssignment.expression);
+        ExpressionType newVariableType;
+        if (variableAssignment.expression instanceof VariableAssignment nestedVariableAssignment) {
+            checkVariableAssignment(nestedVariableAssignment);
+            newVariableType = checkVariableReference(nestedVariableAssignment.name);
+        } else {
+            newVariableType = checkExpression((Expression) variableAssignment.expression);
+        }
         if (newVariableType != ExpressionType.UNDEFINED) {
             for (int scope = 0; scope < variableTypes.getSize(); scope++) {
                 ExpressionType expressionType = variableTypes.get(scope).get(variableAssignment.name.name);

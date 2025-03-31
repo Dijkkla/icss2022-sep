@@ -11,7 +11,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class VariableAssignment extends ASTNode {
     public VariableReference name;
-    public Expression expression;
+    public ASTNode expression;
 
     @Override
     public String getNodeLabel() {
@@ -23,7 +23,7 @@ public class VariableAssignment extends ASTNode {
         if (name == null) {
             name = (VariableReference) child;
         } else if (expression == null) {
-            expression = (Expression) child;
+            expression = child;
         }
 
         return this;

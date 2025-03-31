@@ -72,7 +72,7 @@ declaration: propertyName COLON operation SEMICOLON;
 propertyName: LOWER_IDENT;
 literal: COLOR#colorLiteral | PIXELSIZE#pixelLiteral | PERCENTAGE#percentageLiteral | SCALAR#scalarLiteral | (TRUE | FALSE)#boolLiteral;
 
-variableAssignment: variableReference ASSIGNMENT_OPERATOR operation SEMICOLON;
+variableAssignment: variableReference ASSIGNMENT_OPERATOR (operation SEMICOLON | variableAssignment);
 variableReference: CAPITAL_IDENT;
 
 operation
