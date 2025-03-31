@@ -2,6 +2,8 @@ grammar ICSS;
 
 //--- LEXER: ---
 
+COMMENT: ('//' .*? ('\r' | '\n' | EOF) | '/*' .*? '*/') -> skip;
+
 // IF support:
 IF: 'if';
 ELSE: 'else';
