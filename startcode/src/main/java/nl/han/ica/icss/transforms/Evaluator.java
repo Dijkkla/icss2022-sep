@@ -148,7 +148,7 @@ public class Evaluator implements Transform {
                     transformGreaterThanOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
             case AND -> transformAndOperation((boolean) operationArguments.get(0), (boolean) operationArguments.get(1));
             case OR -> transformOrOperation((boolean) operationArguments.get(0), (boolean) operationArguments.get(1));
-            case REST -> transformRestOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
+            case REMAINDER -> transformRestOperation((int) operationArguments.get(0), (int) operationArguments.get(1));
             default -> throw new IllegalStateException("Unexpected value: " + operation.operationType);
         };
         return switch (operation.expressionType) {

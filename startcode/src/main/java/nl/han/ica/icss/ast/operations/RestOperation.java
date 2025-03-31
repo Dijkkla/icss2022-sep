@@ -8,6 +8,6 @@ import nl.han.ica.icss.ast.types.OperationType;
 public class RestOperation extends Operation {
 
     public RestOperation() {
-        super(OperationType.REST);
+        super(OperationType.REMAINDER);
     }
 }

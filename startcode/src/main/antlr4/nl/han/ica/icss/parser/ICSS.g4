@@ -43,7 +43,7 @@ PLUS: '+';
 MIN: '-';
 MUL: '*';
 DIV: '/';
-REST: '%';
+REMAINDER: '%';
 POW: '^';
 EXCLAM: '!';
 BRACKET_OPEN: '(';
@@ -80,7 +80,7 @@ operation
     | operation EXCLAM#factorialOperation
     | (EXCLAM | PLUS | MIN) operation#prefixOperation
     | operation POW operation#powerOperation
-    | operation (MUL | DIV | REST) operation#multiplicativeOperation
+    | operation (MUL | DIV | REMAINDER) operation#multiplicativeOperation
     | operation (PLUS | MIN) operation#additiveOperation
     | operation (GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#relationalOperation
     | operation ((EQUALS | EXCLAM) EQUALS | GREATER_OR_SMALLER_THAN) operation#equalityOperation

@@ -31,7 +31,7 @@ public class Checker {
                 OperationType.SUBTRACT, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
                 OperationType.MULTIPLY, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
                 OperationType.DIVIDE, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
-                OperationType.REST, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
+                OperationType.REMAINDER, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
                 OperationType.POWER, List.of(ExpressionType.SCALAR),
                 OperationType.FACTORIAL, List.of(ExpressionType.SCALAR),
                 OperationType.NOT, List.of(ExpressionType.BOOL),
@@ -187,7 +187,7 @@ public class Checker {
             case GREATER_THAN -> checkGreaterThanOperation(operation);
             case AND -> checkAndOperation(operation);
             case OR -> checkOrOperation(operation);
-            case REST -> checkRestOperation(operation);
+            case REMAINDER -> checkRestOperation(operation);
         };
     }
 
