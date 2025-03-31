@@ -107,9 +107,28 @@ public class Checker {
     }
 
     private void checkVariableAssignment(VariableAssignment variableAssignment) {
-        variableTypes.getFirst().put(
-                variableAssignment.name.name,
-                checkExpression(variableAssignment.expression));
+        boolean noPreexistingVariable = true;
+        ExpressionType newVariableType = checkExpression(variableAssignment.expression);
+        if (newVariableType != ExpressionType.UNDEFINED) {
+            for (int scope = 0; scope < variableTypes.getSize(); scope++) {
+                ExpressionType expressionType = variableTypes.get(scope).get(variableAssignment.name.name);
+                if (expressionType != null) {
+                    if (expressionType == newVariableType) {
+                        variableTypes.get(scope).put(
+                                variableAssignment.name.name,
+                                newVariableType);
+                    } else {
+                        variableAssignment.setError("Could not set variable " + variableAssignment.name.name + " to " + newVariableType + ". Already is of type " + expressionType);
+                    }
+                    noPreexistingVariable = false;
+                }
+            }
+            if (noPreexistingVariable) {
+                variableTypes.getFirst().put(
+                        variableAssignment.name.name,
+                        newVariableType);
+            }
+        }
     }
 
     private ExpressionType checkExpression(Expression expression) {
@@ -125,11 +144,12 @@ public class Checker {
 
     private ExpressionType checkVariableReference(VariableReference variableReference) {
         for (int scope = 0; scope < variableTypes.getSize(); scope++) {
-            if (variableTypes.get(scope).get(variableReference.name) != null) {
-                return variableTypes.get(scope).get(variableReference.name);
+            ExpressionType expressionType = variableTypes.get(scope).get(variableReference.name);
+            if (expressionType != null) {
+                return expressionType;
             }
         }
-        variableReference.setError("Variable \"" + variableReference.name + "\" has not been initialized");
+        variableReference.setError("Variable \"" + variableReference.name + "\" has not been defined in the current scope");
         return ExpressionType.UNDEFINED;
     }
 

@@ -73,9 +73,22 @@ public class Evaluator implements Transform {
     }
 
     private void transformVariableAssignment(VariableAssignment variableAssignment) {
-        variableValues.getFirst().put(
-                variableAssignment.name.name,
-                transformExpression(variableAssignment.expression));
+        boolean noPreexistingVariable = true;
+        Literal newVariableValue = transformExpression(variableAssignment.expression);
+        for (int scope = 0; scope < variableValues.getSize(); scope++) {
+            Literal variableValue = variableValues.get(scope).get(variableAssignment.name.name);
+            if (variableValue != null) {
+                variableValues.get(scope).put(
+                        variableAssignment.name.name,
+                        newVariableValue);
+                noPreexistingVariable = false;
+            }
+        }
+        if (noPreexistingVariable) {
+            variableValues.getFirst().put(
+                    variableAssignment.name.name,
+                    newVariableValue);
+        }
     }
 
     private Literal transformExpression(Expression expression) {
@@ -89,8 +102,9 @@ public class Evaluator implements Transform {
 
     private Literal transformVariableReference(VariableReference variableReference) {
         for (int scope = 0; scope < variableValues.getSize(); scope++) {
-            if (variableValues.get(scope).get(variableReference.name) != null) {
-                return variableValues.get(scope).get(variableReference.name);
+            Literal variableValue = variableValues.get(scope).get(variableReference.name);
+            if (variableValue != null) {
+                return variableValue;
             }
         }
         throw new RuntimeException("Could not find variable \"" + variableReference.name + "\"");
