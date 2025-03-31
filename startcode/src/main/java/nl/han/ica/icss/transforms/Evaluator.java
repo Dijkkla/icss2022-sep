@@ -32,7 +32,7 @@ public class Evaluator implements Transform {
     }
 
     private void transformStylerule(Stylerule stylerule) {
-        transformBlock(stylerule.body);
+        stylerule.body = transformBlock(stylerule.body);
     }
 
     private List<ASTNode> transformBlock(List<ASTNode> nodes) {
@@ -40,20 +40,19 @@ public class Evaluator implements Transform {
         List<ASTNode> newNodes = new ArrayList<>();
         nodes.forEach(node -> {
             switch (node) {
-                case Declaration declaration -> transformDeclaration(declaration);
+                case Declaration declaration -> newNodes.add(transformDeclaration(declaration));
                 case VariableAssignment variableAssignment -> transformVariableAssignment(variableAssignment);
                 case IfClause ifClause -> newNodes.addAll(transformIfClause(ifClause));
                 default -> throw new IllegalStateException("Unexpected value: " + node);
             }
         });
-        nodes.removeIf(node -> (node instanceof VariableAssignment || node instanceof IfClause));
-        nodes.addAll(newNodes);
         variableValues.removeFirst();
-        return nodes;
+        return newNodes;
     }
 
-    private void transformDeclaration(Declaration declaration) {
+    private ASTNode transformDeclaration(Declaration declaration) {
         declaration.expression = transformExpression(declaration.expression);
+        return declaration;
     }
 
     private List<ASTNode> transformIfClause(IfClause ifClause) {
