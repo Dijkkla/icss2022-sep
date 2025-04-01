@@ -13,6 +13,8 @@ import java.util.Map;
 
 public class Checker {
 
+    private final IHANLinkedList<Map<String, ExpressionType>> variableTypes = new HANLinkedList<>();
+
     private final Map<String, List<ExpressionType>> declarationTypes = Map.of(
             "color", List.of(ExpressionType.COLOR),
             "background-color", List.of(ExpressionType.COLOR),
@@ -20,34 +22,22 @@ public class Checker {
             "height", List.of(ExpressionType.PIXEL, ExpressionType.PERCENTAGE)
     );
 
-    private final Map<OperationType, List<ExpressionType>> operationTypes;
-
-    private IHANLinkedList<Map<String, ExpressionType>> variableTypes;
-
-    public Checker() {
-        operationTypes = new HashMap<>();
-        Object[] operationTypesMapBuilder = {
-                OperationType.ADD, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
-                OperationType.SUBTRACT, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
-                OperationType.MULTIPLY, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
-                OperationType.DIVIDE, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
-                OperationType.REMAINDER, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
-                OperationType.POWER, List.of(ExpressionType.SCALAR),
-                OperationType.FACTORIAL, List.of(ExpressionType.SCALAR),
-                OperationType.NOT, List.of(ExpressionType.BOOL),
-                OperationType.EQUALS, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR, ExpressionType.COLOR, ExpressionType.BOOL),
-                OperationType.GREATER_THAN, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR),
-                OperationType.AND, List.of(ExpressionType.BOOL),
-                OperationType.OR, List.of(ExpressionType.BOOL)
-        };
-        for (int i = 0; i < operationTypesMapBuilder.length; i += 2) {
-            operationTypes.put((OperationType) operationTypesMapBuilder[i], (List<ExpressionType>) operationTypesMapBuilder[i + 1]);
-        }
-    }
+    private final Map<OperationType, List<ExpressionType>> operationTypes = Map.ofEntries(
+            Map.entry(OperationType.ADD, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR)),
+            Map.entry(OperationType.SUBTRACT, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR)),
+            Map.entry(OperationType.MULTIPLY, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR)),
+            Map.entry(OperationType.DIVIDE, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR)),
+            Map.entry(OperationType.REMAINDER, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR)),
+            Map.entry(OperationType.POWER, List.of(ExpressionType.SCALAR)),
+            Map.entry(OperationType.FACTORIAL, List.of(ExpressionType.SCALAR)),
+            Map.entry(OperationType.NOT, List.of(ExpressionType.BOOL)),
+            Map.entry(OperationType.EQUALS, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR, ExpressionType.COLOR, ExpressionType.BOOL)),
+            Map.entry(OperationType.GREATER_THAN, List.of(ExpressionType.PERCENTAGE, ExpressionType.PIXEL, ExpressionType.SCALAR)),
+            Map.entry(OperationType.AND, List.of(ExpressionType.BOOL)),
+            Map.entry(OperationType.OR, List.of(ExpressionType.BOOL))
+    );
 
     public void check(AST ast) {
-        variableTypes = new HANLinkedList<>();
-
         checkStylesheet(ast.root);
     }
 
