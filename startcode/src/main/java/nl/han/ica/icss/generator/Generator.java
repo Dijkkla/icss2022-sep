@@ -19,10 +19,6 @@ public class Generator {
         stylesheet.body.forEach(stylerule -> generateStylerule((Stylerule) stylerule));
     }
 
-    private void generateLiteral(Literal literal) {
-        stringBuilder.append(literal.toString()).append("\n");
-    }
-
     private void generateStylerule(Stylerule stylerule) {
         stylerule.selectors.forEach(selector -> stringBuilder.append(selector.toString()).append(" "));
         stringBuilder.append("{\n");
