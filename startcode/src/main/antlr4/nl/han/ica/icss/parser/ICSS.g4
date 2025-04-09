@@ -54,6 +54,7 @@ SMALLER_THAN: '<';
 GREATER_OR_EQUAL_THAN: '>=';
 SMALLER_OR_EQUAL_THAN: '<=';
 GREATER_OR_SMALLER_THAN: '<>';
+DOUBLE_EQUALS: '==';
 EQUALS: '=';
 
 AND: '&&';
@@ -83,7 +84,7 @@ operation
     | operation (MUL | DIV | REMAINDER) operation#multiplicativeOperation
     | operation (PLUS | MIN) operation#additiveOperation
     | operation (GREATER_OR_EQUAL_THAN | GREATER_THAN | SMALLER_OR_EQUAL_THAN | SMALLER_THAN) operation#relationalOperation
-    | operation ((EQUALS | EXCLAM) EQUALS | GREATER_OR_SMALLER_THAN) operation#equalityOperation
+    | operation (DOUBLE_EQUALS | EXCLAM EQUALS | GREATER_OR_SMALLER_THAN) operation#equalityOperation
     | operation AND operation#andOperation
     | operation OR operation#orOperation
     | (variableReference | literal)#terminalOperation
