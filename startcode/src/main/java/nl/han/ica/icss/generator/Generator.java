@@ -1,7 +1,10 @@
 package nl.han.ica.icss.generator;
 
 
-import nl.han.ica.icss.ast.*;
+import nl.han.ica.icss.ast.AST;
+import nl.han.ica.icss.ast.Declaration;
+import nl.han.ica.icss.ast.Stylerule;
+import nl.han.ica.icss.ast.Stylesheet;
 import nl.han.ica.icss.ast.literals.ColorLiteral;
 import nl.han.ica.icss.ast.literals.PercentageLiteral;
 import nl.han.ica.icss.ast.literals.PixelLiteral;
