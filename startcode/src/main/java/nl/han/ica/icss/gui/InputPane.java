@@ -37,7 +37,7 @@ public class InputPane extends BorderPane {
 
     public void setText(File file) {
         try {
-            this.setText(new String(Files.readAllBytes(file.toPath()), Charset.defaultCharset()));
+            this.setText(Files.readString(file.toPath(), Charset.defaultCharset()));
         } catch (IOException e) {
             System.err.println(e);
         }

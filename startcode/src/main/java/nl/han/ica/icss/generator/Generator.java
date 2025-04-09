@@ -11,7 +11,7 @@ import nl.han.ica.icss.ast.literals.PixelLiteral;
 
 public class Generator {
 
-    StringBuilder stringBuilder = new StringBuilder();
+    final StringBuilder stringBuilder = new StringBuilder();
 
     public String generate(AST ast) {
         generateStylesheet(ast.root);

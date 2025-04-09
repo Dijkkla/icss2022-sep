@@ -14,7 +14,6 @@ public class ElseClause extends ASTNode {
     }
 
     public ElseClause(List<ASTNode> body) {
-
         this.body = body;
     }
 

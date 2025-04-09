@@ -1,5 +1,6 @@
 package nl.han.ica.icss;
 
+import lombok.Getter;
 import nl.han.ica.icss.ast.AST;
 import nl.han.ica.icss.checker.Checker;
 import nl.han.ica.icss.checker.SemanticError;
@@ -21,10 +22,14 @@ import java.util.List;
 
 public class Pipeline implements ANTLRErrorListener {
 
+    @Getter
     private final List<String> errors;
     private AST ast;
+    @Getter
     private boolean parsed = false;
+    @Getter
     private boolean checked = false;
+    @Getter
     private boolean transformed = false;
 
     public Pipeline() {
@@ -33,22 +38,6 @@ public class Pipeline implements ANTLRErrorListener {
 
     public AST getAST() {
         return ast;
-    }
-
-    public List<String> getErrors() {
-        return errors;
-    }
-
-    public boolean isParsed() {
-        return parsed;
-    }
-
-    public boolean isChecked() {
-        return checked;
-    }
-
-    public boolean isTransformed() {
-        return transformed;
     }
 
     public void parseString(String input) {

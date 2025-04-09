@@ -65,7 +65,7 @@ public class MainGui extends Application {
 
         //Create buttons
         parseButton = new Button("Parse");
-        parseButton.setOnAction(new EventHandler<ActionEvent>() {
+        parseButton.setOnAction(new EventHandler<>() {
             @Override
             public void handle(ActionEvent e) {
                 me.parse();
@@ -73,21 +73,21 @@ public class MainGui extends Application {
         });
 
         checkButton = new Button("Check");
-        checkButton.setOnAction(new EventHandler<ActionEvent>() {
+        checkButton.setOnAction(new EventHandler<>() {
             @Override
             public void handle(ActionEvent e) {
                 me.check();
             }
         });
         transformButton = new Button("Transform");
-        transformButton.setOnAction(new EventHandler<ActionEvent>() {
+        transformButton.setOnAction(new EventHandler<>() {
             @Override
             public void handle(ActionEvent e) {
                 me.transform();
             }
         });
         generateButton = new Button("Generate");
-        generateButton.setOnAction(new EventHandler<ActionEvent>() {
+        generateButton.setOnAction(new EventHandler<>() {
             @Override
             public void handle(ActionEvent e) {
                 me.generate();
@@ -99,7 +99,7 @@ public class MainGui extends Application {
 
         Menu fileMenu = new Menu("File");
         MenuItem loadInput = new MenuItem("Load input ICSS...");
-        loadInput.setOnAction(new EventHandler<ActionEvent>() {
+        loadInput.setOnAction(new EventHandler<>() {
             public void handle(ActionEvent e) {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Open input ICSS...");
@@ -117,7 +117,7 @@ public class MainGui extends Application {
         for (String level : examples) {
 
             MenuItem levelItem = new MenuItem(level);
-            levelItem.setOnAction(new EventHandler<ActionEvent>() {
+            levelItem.setOnAction(new EventHandler<>() {
                 public void handle(ActionEvent e) {
                     try {
                         ClassLoader classLoader = MainGui.class.getClassLoader();
@@ -132,7 +132,7 @@ public class MainGui extends Application {
         }
 
         MenuItem saveOutput = new MenuItem("Save generated CSS...");
-        saveOutput.setOnAction(new EventHandler<ActionEvent>() {
+        saveOutput.setOnAction(new EventHandler<>() {
             @Override
             public void handle(ActionEvent e) {
                 //Create file dialog
@@ -148,7 +148,7 @@ public class MainGui extends Application {
         });
 
         MenuItem quit = new MenuItem("Quit");
-        quit.setOnAction(new EventHandler<ActionEvent>() {
+        quit.setOnAction(new EventHandler<>() {
             public void handle(ActionEvent e) {
                 Platform.exit();
             }

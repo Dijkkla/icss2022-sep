@@ -18,8 +18,8 @@ public class ASTPane extends BorderPane {
         super();
 
         title = new Label("Internal (AST):");
-        content = new TreeView<ASTNode>();
-        content.setCellFactory(treeview -> new TreeCell<ASTNode>() {
+        content = new TreeView<>();
+        content.setCellFactory(treeview -> new TreeCell<>() {
             @Override
             public void updateItem(ASTNode item, boolean empty) {
                 super.updateItem(item, empty);
@@ -55,7 +55,7 @@ public class ASTPane extends BorderPane {
 
     private TreeItem<ASTNode> astNodeToTreeItem(ASTNode astNode) {
 
-        TreeItem<ASTNode> tvNode = new TreeItem<ASTNode>(astNode);
+        TreeItem<ASTNode> tvNode = new TreeItem<>(astNode);
         tvNode.setExpanded(true);
 
         for (ASTNode child : astNode.getChildren()) {
